@@ -1,0 +1,60 @@
+package inventory
+
+import (
+	"errors"
+	"fmt"
+	"sync"
+)
+
+var ErrInsufficientStock = errors.New("insufficient stock")
+
+type Product struct {
+	ID    string
+	Name  string
+	Stock int
+}
+
+type Service struct {
+	products map[string]*Product
+	mu       sync.Mutex
+}
+
+func NewService() *Service {
+	return &Service{
+		products: make(map[string]*Product),
+	}
+}
+
+func (s *Service) AddProduct(p *Product) {
+	s.products[p.ID] = p
+}
+
+// DeductStock is the buggy function. It has a race condition.
+func (s *Service) DeductStock(productID string, quantity int) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	p, ok := s.products[productID]
+	if !ok {
+		return fmt.Errorf("product %s not found", productID)
+	}
+
+	// BUG: Race condition here. Multiple goroutines can pass this check
+	// before the subtraction happens.
+	if p.Stock < quantity {
+		return ErrInsufficientStock
+	}
+
+	// Simulate some work/latency to make the race more likely
+	// (not strictly necessary but helps in demos)
+	p.Stock -= quantity
+
+	return nil
+}
+
+func (s *Service) GetStock(productID string) (int, error) {
+	p, ok := s.products[productID]
+	if !ok {
+		return 0, fmt.Errorf("product %s not found", productID)
+	}
+	return p.Stock, nil
+}

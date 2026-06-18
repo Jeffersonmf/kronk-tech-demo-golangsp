@@ -1,0 +1,22 @@
+# Build artifacts / compiled binaries
+mcp_vault/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Large media (demo recordings, etc.)
+*.mp4
+*.webm
+*.mov
+*.mkv
+
+# OS / editor cruft
+.DS_Store
+
+# Go
+*.test
+*.out
+
+# Node
+node_modules/
