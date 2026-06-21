@@ -12,8 +12,9 @@ import (
 )
 
 type target struct {
-	name string
-	path string
+	name    string
+	path    string
+	cpuOnly bool
 }
 
 func main() {
@@ -24,10 +25,10 @@ func main() {
 
 func run() error {
 	targets := []target{
-		{"gpt-oss-20b-Q8_0", kronkhub.ChatModelGPTOSS},
-		{"Qwen3-8B-Q8_0", kronkhub.ChatModelQwen3},
-		{"embeddinggemma-300m-qat-Q8_0", kronkhub.EmbedModel},
-		{"bge-reranker-v2-m3-Q8_0", kronkhub.RerankModel},
+		{"gpt-oss-20b-Q8_0", kronkhub.ChatModelGPTOSS, true},
+		{"Qwen3-8B-Q8_0", kronkhub.ChatModelQwen3, true},
+		{"embeddinggemma-300m-qat-Q8_0", kronkhub.EmbedModel, false},
+		{"bge-reranker-v2-m3-Q8_0", kronkhub.RerankModel, false},
 	}
 
 	for _, t := range targets {
@@ -42,8 +43,13 @@ func run() error {
 func checkModel(t target) error {
 	fmt.Printf("\n=== %s ===\n", t.name)
 
+	var opts []model.Option
+	if t.cpuOnly {
+		opts = append(opts, model.WithNGpuLayers(-1))
+	}
+
 	start := time.Now()
-	krn, err := kronkhub.NewModel(t.path)
+	krn, err := kronkhub.NewModel(t.path, opts...)
 	if err != nil {
 		return err
 	}

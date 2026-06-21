@@ -27,7 +27,7 @@ func run() error {
 	fmt.Println("Mode: Local-Only (CPU Inference)")
 	fmt.Println("Model:", kronkhub.ChatModelGPTOSS)
 
-	krn, err := kronkhub.NewModel(kronkhub.ChatModelGPTOSS, model.WithContextWindow(8192))
+	krn, err := kronkhub.NewModel(kronkhub.ChatModelGPTOSS, model.WithContextWindow(8192), model.WithNGpuLayers(-1))
 	if err != nil {
 		return err
 	}

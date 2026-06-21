@@ -29,29 +29,29 @@ func (s *Service) AddProduct(p *Product) {
 	s.products[p.ID] = p
 }
 
-// DeductStock is the buggy function. It has a race condition.
+// DeductStock deducts the stock of a product.
 func (s *Service) DeductStock(productID string, quantity int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	p, ok := s.products[productID]
 	if !ok {
 		return fmt.Errorf("product %s not found", productID)
 	}
 
-	// BUG: Race condition here. Multiple goroutines can pass this check
-	// before the subtraction happens.
 	if p.Stock < quantity {
 		return ErrInsufficientStock
 	}
 
-	// Simulate some work/latency to make the race more likely
-	// (not strictly necessary but helps in demos)
 	p.Stock -= quantity
 
 	return nil
 }
 
 func (s *Service) GetStock(productID string) (int, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	p, ok := s.products[productID]
 	if !ok {
 		return 0, fmt.Errorf("product %s not found", productID)

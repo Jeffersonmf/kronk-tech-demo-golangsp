@@ -32,7 +32,7 @@ func run() error {
 	fmt.Printf("=== %s ===\n", name)
 
 	start := time.Now()
-	krn, err := kronkhub.NewModel(path, model.WithContextWindow(8192))
+	krn, err := kronkhub.NewModel(path, model.WithContextWindow(8192), model.WithNGpuLayers(-1))
 	if err != nil {
 		return err
 	}

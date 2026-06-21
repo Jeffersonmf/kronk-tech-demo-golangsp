@@ -22,7 +22,7 @@ import (
 	"github.com/jeff/mcp-vault/internal/vault"
 )
 
-const defaultVaultPath = "/home/jmarchetti/Developer/golangsp/parte2/obsidian_vault"
+const defaultVaultPath = "/home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault"
 
 // embedModelPath points to the embeddinggemma GGUF already downloaded via
 // `kronk model pull --local`. Dimension measured at runtime via Embeddings().

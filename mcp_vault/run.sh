@@ -5,7 +5,7 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-GO="${GO:-/home/jmarchetti/.local/share/mise/installs/go/1.25.1/bin/go}"
+GO="${GO:-$(command -v go)}"
 unset GOTOOLCHAIN
 export KRONK_PROCESSOR="${KRONK_PROCESSOR:-cpu}"
 
