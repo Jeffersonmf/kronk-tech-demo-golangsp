@@ -133,7 +133,10 @@
       "Bash(tar xf *)",
       "Bash(mkdir -p ~/.local/bin)",
       "Bash(mv lazygit *)",
-      "Bash(chmod +x ~/.local/bin/lazygit)"
+      "Bash(chmod +x ~/.local/bin/lazygit)",
+      "Bash(pkill -9 -f \"code --extensions-dir\")",
+      "Bash(pkill -9 -f \"vscode/code\")",
+      "Bash(grep -i \"^.*code$\")"
     ]
   }
 }
