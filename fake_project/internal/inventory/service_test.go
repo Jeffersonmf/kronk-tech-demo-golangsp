@@ -14,9 +14,9 @@ func TestDeductStock_RaceCondition(t *testing.T) {
 	numRequests := 20
 	quantityPerRequest := 1
 
-	// We have 10 in stock, we make 20 requests of 1.
-	// We expect exactly 10 requests to succeed and 10 to fail.
-	// Stock should be 0 at the end.
+	// Temos 10 em estoque e fazemos 20 requisições de 1.
+	// Esperamos exatamente 10 requisições com sucesso e 10 com falha.
+	// O estoque deve ficar em 0 no final.
 
 	for i := 0; i < numRequests; i++ {
 		wg.Add(1)
@@ -30,6 +30,6 @@ func TestDeductStock_RaceCondition(t *testing.T) {
 
 	stock, _ := s.GetStock(productID)
 	if stock < 0 {
-		t.Errorf("Stock is negative: %d", stock)
+		t.Errorf("Estoque está negativo: %d", stock)
 	}
 }

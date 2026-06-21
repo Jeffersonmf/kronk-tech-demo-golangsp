@@ -3,10 +3,9 @@ package inventory
 import (
 	"errors"
 	"fmt"
-	"sync"
 )
 
-var ErrInsufficientStock = errors.New("insufficient stock")
+var ErrInsufficientStock = errors.New("estoque insuficiente")
 
 type Product struct {
 	ID    string
@@ -16,7 +15,6 @@ type Product struct {
 
 type Service struct {
 	products map[string]*Product
-	mu       sync.Mutex
 }
 
 func NewService() *Service {
@@ -29,32 +27,30 @@ func (s *Service) AddProduct(p *Product) {
 	s.products[p.ID] = p
 }
 
-// DeductStock deducts the stock of a product.
+// DeductStock é a função com o bug. Ela tem uma race condition.
 func (s *Service) DeductStock(productID string, quantity int) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	p, ok := s.products[productID]
 	if !ok {
-		return fmt.Errorf("product %s not found", productID)
+		return fmt.Errorf("produto %s não encontrado", productID)
 	}
 
+	// BUG: Race condition aqui. Múltiplas goroutines podem passar por essa
+	// verificação antes que a subtração aconteça.
 	if p.Stock < quantity {
 		return ErrInsufficientStock
 	}
 
+	// Simula algum trabalho/latência para tornar a race mais visível
+	// (não é estritamente necessário, mas ajuda na demonstração).
 	p.Stock -= quantity
 
 	return nil
 }
 
 func (s *Service) GetStock(productID string) (int, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	p, ok := s.products[productID]
 	if !ok {
-		return 0, fmt.Errorf("product %s not found", productID)
+		return 0, fmt.Errorf("produto %s não encontrado", productID)
 	}
 	return p.Stock, nil
 }
