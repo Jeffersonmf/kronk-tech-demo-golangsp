@@ -22,11 +22,15 @@ import (
 	"github.com/jeff/mcp-vault/internal/vault"
 )
 
-const defaultVaultPath = "/home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault"
+const defaultVaultPath = "/Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp/obsidian_vault"
 
-// embedModelPath points to the embeddinggemma GGUF already downloaded via
-// `kronk model pull --local`. Dimension measured at runtime via Embeddings().
-const embedModelPath = "/home/jmarchetti/.kronk/models/ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf"
+func embedModelPath() string {
+	if v := os.Getenv("KRONK_EMBED_MODEL"); v != "" {
+		return v
+	}
+	home, _ := os.UserHomeDir()
+	return home + "/.kronk/models/ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf"
+}
 
 const addr = ":9002"
 
@@ -50,7 +54,7 @@ func run() error {
 		return fmt.Errorf("kronk init: %w", err)
 	}
 
-	krnEmbed, err := kronk.New(model.WithModelFiles([]string{embedModelPath}))
+	krnEmbed, err := kronk.New(model.WithModelFiles([]string{embedModelPath()}))
 	if err != nil {
 		return fmt.Errorf("kronk new: %w", err)
 	}
