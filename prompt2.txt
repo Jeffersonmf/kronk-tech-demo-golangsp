@@ -1,0 +1,3 @@
+Leia a TASK-002 no vault do Obsidian (obsidian_vault/tasks/TASK-002.md) e me explique o que ela pede.
+
+Não implemente nada ainda — só confirme que encontrou a task certa e resuma os critérios de aceite.

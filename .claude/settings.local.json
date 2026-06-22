@@ -136,7 +136,19 @@
       "Bash(chmod +x ~/.local/bin/lazygit)",
       "Bash(pkill -9 -f \"code --extensions-dir\")",
       "Bash(pkill -9 -f \"vscode/code\")",
-      "Bash(grep -i \"^.*code$\")"
+      "Bash(grep -i \"^.*code$\")",
+      "Bash(flatpak install *)",
+      "Bash(flatpak remotes *)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(timeout 240 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp -- \"Leia a TASK-001 no vault do Obsidian \\(obsidian_vault/tasks/TASK-001.md\\) e resolva o problema descrito nela. Depois valide com go test ./internal/inventory/... -race -v dentro da pasta fake_project.\")",
+      "Bash(timeout 480 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp -- \"Leia a TASK-001 no vault do Obsidian \\(obsidian_vault/tasks/TASK-001.md\\) e resolva o problema descrito nela. Depois valide com go test ./internal/inventory/... -race -v dentro da pasta fake_project.\")",
+      "Bash(timeout 600 cline --thinking low --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp -- \"Leia a TASK-001 no vault do Obsidian \\(obsidian_vault/tasks/TASK-001.md\\) e resolva o problema descrito nela. Depois valide com go test ./internal/inventory/... -race -v dentro da pasta fake_project.\")",
+      "Bash(timeout 300 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp -- \"Leia a TASK-001 no vault do Obsidian \\(obsidian_vault/tasks/TASK-001.md\\) e resolva o problema descrito nela. Depois valide com go test ./internal/inventory/... -race -v dentro da pasta fake_project.\")",
+      "Bash(timeout 300 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp/fake_project -- \"Leia o arquivo /home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault/tasks/TASK-001.md e resolva o problema descrito nele. O código fica em internal/inventory/service.go \\(caminho relativo ao diretório atual\\). Depois valide rodando: go test ./internal/inventory/... -race -v\")",
+      "Bash(git rm *)",
+      "Bash(timeout 480 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp/fake_project -- \"Leia o arquivo /home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault/tasks/TASK-001.md e resolva o problema descrito nele. O código fica em internal/inventory/service.go \\(caminho relativo ao diretório atual\\). Depois valide rodando: go test ./internal/inventory/... -race -v\")",
+      "Bash(timeout 900 cline --cwd /home/jmarchetti/Developer/kronk-tech-demo-golangsp/fake_project -- \"Leia o arquivo /home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault/tasks/TASK-001.md e resolva o problema descrito nele. O código fica em internal/inventory/service.go \\(caminho relativo ao diretório atual\\). Depois valide rodando: go test ./internal/inventory/... -race -v\")"
     ]
   }
 }

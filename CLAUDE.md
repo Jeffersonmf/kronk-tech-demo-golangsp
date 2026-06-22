@@ -18,26 +18,23 @@ The **WOW moment** is showing Cline's token counter + USD cost side by side betw
 ```
 parte2/
   fake_project/internal/inventory/   # target Go app with intentional race condition bug
-  gemini_version/                    # Kronk hub demo (Go module, stub implementation)
+  mcp_vault/                         # the real Scene 1 (dumb) vs Scene 2 (smart) MCP servers
   obsidian_vault/tasks/              # business requirements in Markdown (Obsidian)
-  GEMINI.md                          # fuller context file (see also)
 ```
-
-> `traditional-mcp/` and `kronk-demo/` directories (referenced in earlier planning) are not yet created.
 
 ## Commands
 
-All commands run from the relevant subdirectory (each demo is a self-contained Go module).
+All commands run from the relevant subdirectory (each is a self-contained Go module).
 
 ```sh
-# Run the Kronk hub demo
-cd gemini_version && go run main.go
+# Run both mcp_vault MCP servers (Cena 1 dumb :9001, Cena 2 smart :9002)
+cd mcp_vault && ./run.sh
 
 # Run the fake project tests (detect the race condition)
 cd fake_project && go test ./internal/inventory/... -race -v
 
-# Build check
-cd gemini_version && go build ./...
+# Run the local Kronk model server
+kronk server start --processor cpu   # or --processor cuda
 ```
 
 ## Demo scenario
@@ -46,6 +43,8 @@ The "fake project" is an e-commerce inventory service (`fake_project/internal/in
 
 **TASK-001** (`obsidian_vault/tasks/TASK-001.md`) is the Obsidian "ticket" the AI agent reads to understand what to fix. The agent (Cline) reads the task, locates the code, applies a mutex fix, and verifies with `go test -race`.
 
+`mcp_vault/cmd/dumb` (Cena 1, `read_vault`) and `mcp_vault/cmd/smart` (Cena 2, `search_vault`, embeddings + DuckDB) are the two MCP servers that produce the token/cost contrast — see `mcp_vault/` for details.
+
 ## Finalized stack
 
 | Component | Choice | Notes |
@@ -53,10 +52,10 @@ The "fake project" is an e-commerce inventory service (`fake_project/internal/in
 | Editor/stage | VS Code | Cline runs natively here |
 | Agent | Cline (VS Code ext.) | Token counter + USD cost visible in UI |
 | Local inference | Kronk (Ardan Labs) | llama.cpp in Go |
-| Model | Qwen3 14B Q4_K_M | Acceptable speed on CPU |
+| Model | Qwen3-8B-Q8_0 | CPU or hybrid CPU/GPU, tuned per `~/.kronk/models/model_config.yaml` |
 | Requirements | Obsidian | ACs and TAs in Markdown |
 | Target code | `fake_project/` | Go service with race condition |
-| Hardware | Linux, i7, 96 GB RAM, no GPU | CPU-only inference via llama.cpp |
+| Hardware | Linux, i9, 64GB RAM, RTX 4070 Ti (12GB) | CPU and/or CUDA inference via llama.cpp |
 
 ## Talk constraints
 

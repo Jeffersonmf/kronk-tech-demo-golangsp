@@ -1,0 +1,3 @@
+Procure no vault do Obsidian quais tasks do backlog têm relação com dinheiro, pagamentos ou faturamento. Liste os números das tasks encontradas e um resumo de uma linha pra cada uma.
+
+Esse é interessante porque não dá pra resolver com busca por palavra-chave exata — exige entender o significado de cada task pra perceber que cupom de desconto (TASK-002), relatório de vendas (TASK-006) e reembolso (TASK-007) são todas "sobre dinheiro" mesmo sem usar essa palavra. É um bom contraste pra mostrar a diferença entre o MCP dumb (que traria tudo, sem filtrar) e o smart (que usa embeddings de verdade pra agrupar por similaridade semântica).

@@ -1,0 +1,17 @@
+Leia a TASK-001 no vault do Obsidian (obsidian_vault/tasks/TASK-001.md) e resolva o problema descrito nela.
+
+Contexto: nossa plataforma de e-commerce está com um bug crítico de concorrência — durante eventos de alto tráfego (promoções/flash sales), alguns produtos ficam com estoque negativo. A lógica de inventário está em fake_project/internal/inventory/service.go, no método DeductStock. A implementação atual faz uma verificação "if" simples sem nenhum lock, então múltiplas goroutines conseguem passar pela checagem de estoque ao mesmo tempo antes que a subtração aconteça.
+
+Critérios de aceite:
+1. A redução de estoque deve ser atômica.
+2. O sistema deve verificar se estoque_disponivel >= quantidade_solicitada antes de deduzir.
+3. O estoque do produto nunca deve ficar abaixo de zero.
+4. Em caso de estoque insuficiente, retornar o erro ErrInsufficientStock (já existe no pacote).
+
+Especificação técnica: use primitivas de concorrência do Go (mutex ou operações atômicas) para corrigir a race condition. Não precisa reescrever a estrutura do serviço, só tornar a operação de checagem+dedução atômica.
+
+Depois de aplicar a correção, valide rodando:
+
+go test ./internal/inventory/... -race -v
+
+O teste em fake_project/internal/inventory/service_test.go deve passar com a flag -race habilitada, sem nenhum warning de data race. Se passar, está resolvido.
