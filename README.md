@@ -39,7 +39,7 @@ Pré-requisitos: [`kronk`](https://github.com/ardanlabs/kronk) instalado e os mo
 
 ```sh
 # 1. Suba o servidor de inferência local
-kronk server start --processor cpu   # ou --processor cuda, se tiver GPU NVIDIA
+kronk server start --processor cpu   # ou --processor metal (Mac) / --processor cuda (GPU NVIDIA)
 
 # 2. Suba os dois servidores MCP
 cd mcp_vault && ./run.sh

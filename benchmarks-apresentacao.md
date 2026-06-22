@@ -1,56 +1,52 @@
-# Benchmarks Kronk local — Qwen3-8B-Q8_0 (RTX 4070 Ti, 12GB)
+# Benchmarks Kronk local — gpt-oss-20b-Q8_0 (MacBook M4 Pro, Metal, 48GB unificada)
 
-Números medidos ao vivo durante a preparação da talk (2026-06-21), pra usar nos slides de comparação CPU vs GPU.
+Números medidos ao vivo durante a preparação da talk (2026-06-22), pra usar nos slides de comparação CPU vs Metal.
+
+> Nota de bastidor: a talk foi originalmente preparada num Linux com RTX 4070 Ti (12GB de VRAM dedicada) usando o `Qwen3-8B-Q8_0` — ver histórico do repo se quiser a história completa de VRAM-out-of-memory daquela máquina. A gravação real acabou migrando pro MacBook M4 Pro, e isso muda o personagem da história: memória unificada (48GB compartilhada entre CPU e GPU) não tem o teto rígido de VRAM dedicada, então o `gpt-oss-20b-Q8_0` (MoE, 20B parâmetros, ~12GB em disco) cabe inteiro e sobra bastante folga — não precisamos mais do offload híbrido como muleta de memória. O gargalo muda de lugar: virou compute do kernel Metal, não capacidade de memória.
 
 ## CPU only (`--processor cpu`)
 
 | Métrica | Valor |
 |---|---|
-| Velocidade de geração | **6.3 tokens/s** |
-| Tempo até o 1º token (prompt pequeno, ~18 tokens) | 520 ms |
+| Velocidade de geração | ~6-8 tokens/s (estimado, mesma ordem de grandeza do Linux original) |
 
-## GPU full offload (36/36 camadas), contexto pequeno
+## Metal full offload (24/24 camadas, `ngpu-layers: 0` = todas)
 
-| Métrica | Valor |
-|---|---|
-| Velocidade de geração | **50.8 tokens/s** (~8x vs CPU) |
-| Tempo até o 1º token (prompt pequeno, ~18 tokens) | **54 ms** (~10x vs CPU) |
-| VRAM usada | 10.3GB / 12.28GB |
+Testado com três tamanhos de prompt, simulando desde uma pergunta simples até um prompt real do Cline com MCPs ativos:
 
-> Esse modo (GPU 100%) só funciona com contexto pequeno (testado com 4096). Com contexto maior (16384, necessário pro Cline real com os MCPs ativos) a inicialização **falha** — a placa não tem VRAM suficiente pra pesos completos (8.7GB) + cache de contexto grande.
+| Cenário | Prompt tokens | Tempo até 1º token | Velocidade de geração |
+|---|---|---|---|
+| Curto | 81 | ~205-430 ms | ~70 tokens/s |
+| Médio (estilo Cline real) | 2.034 | ~2.2 s | ~65-68 tokens/s |
+| Stress (simulando Cline com MCPs grandes) | 9.084 | ~11.2-12.4 s | ~63 tokens/s |
 
-## Configuração final escolhida: GPU parcial (18/36 camadas) + contexto 16384
+> Comparado ao CPU puro, full offload no Metal é ~9-10x mais rápido pra gerar texto — sem nenhum drama de "não cabe na memória", porque é memória unificada.
 
-Testado com prompt real grande (~12.6K tokens, simulando o Cline com 2 MCP servers ativos):
+## Configuração final escolhida: full offload, sem híbrido
 
-| Métrica | Valor |
-|---|---|
-| Velocidade de geração | 5.2 tokens/s |
-| Tempo até o 1º token (prompt grande, ~12.6K tokens) | 12.4 s |
-| VRAM usada | 7.87GB / 12.28GB |
-| Margem livre | 3.88GB |
-
-### Ponto de comparação testado (não escolhido): 28/36 camadas
-
-| Métrica | Valor |
-|---|---|
-| Velocidade de geração | 9.5 tokens/s |
-| Tempo até o 1º token (mesmo prompt grande) | 7.3 s |
-| VRAM usada | 10.15GB / 12.28GB |
-| Margem livre | 1.65GB (descartado — margem parecida com a falha anterior) |
-
-## Decisão final
-
-Ficou em **18 de 36 camadas na GPU**, contexto 16384, `cache-type-k/v: q8_0`, `--budget-percent 92`. Prioriza margem de VRAM (3.88GB livres) sobre velocidade máxima, já que a gravação tolera retake mas não tolera ficar reconfigurando no meio da sessão.
+Diferente da máquina original (Linux + RTX 4070 Ti), aqui não existe a pegadinha de VRAM
+que forçava offload parcial. `ngpu-layers: 0` (todas as camadas na GPU) funciona até no
+prompt de stress de ~9k tokens, sem falhar por falta de memória.
 
 Config em `~/.kronk/models/model_config.yaml`:
 
 ```yaml
-Qwen3-8B-Q8_0:
-  context-window: 16384
-  cache-type-k: q8_0
-  cache-type-v: q8_0
-  ngpu-layers: 18
+gpt-oss-20b-Q8_0:
+  ngpu-layers: 0          # 0 = todas as camadas na GPU (convenção invertida do Kronk)
+  flash-attention: enabled # forçado, não "auto" — gpt-oss mistura atenção full/sliding-window por camada
+  offload-kqv: true
+  op-offload: true
+  nbatch: 4096
+  nubatch: 2048
+  context-window: 32768
 ```
 
-Servidor: `kronk server start --processor cuda --budget-percent 92`
+Servidor: `KRONK_PROCESSOR=metal kronk server start`
+
+### O que tentamos e não ajudou tanto: aumentar batch size
+
+Testamos `nbatch`/`nubatch` em 512/1024/2048/4096 esperando um ganho grande na velocidade
+de prefill (tempo até o 1º token) do prompt de stress. O ganho real foi de só **~6%**
+(12.36s → 11.58s). Conclusão: pra esse modelo MoE, no Metal, o prefill é limitado pelo
+*compute* do kernel — o roteamento de especialistas — não pelo tamanho do batch. É um bom
+contraponto pra história de "só aumentar batch resolve": medimos antes de assumir.

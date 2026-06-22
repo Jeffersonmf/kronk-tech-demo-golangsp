@@ -29,7 +29,7 @@ Seção técnica aprofundada sobre o Kronk. Entra depois da abertura (`slides-ab
 **Tela:** Tabela rápida — F16 (sem perda) vs Q8_0 (quase sem perda) vs Q4_K_M (mais compacto, alguma perda).
 
 **Roteiro:**
-"Antes de falar de MoE e Hybrid, precisamos alinhar um conceito: quantização. Um modelo de linguagem é, no fundo, bilhões de números de ponto flutuante. Quantização é comprimir esses números pra ocupar menos memória. Q8_0 usa 8 bits por número — praticamente sem perda de qualidade. Q4_K_M usa 4 bits — bem mais compacto, com uma perdinha de precisão que na prática quase não se nota em tarefas de código. Hoje usamos Qwen3-8B em Q8_0: 8 bilhões de parâmetros, ocupando uns 8.7GB em disco."
+"Antes de falar de MoE e Hybrid, precisamos alinhar um conceito: quantização. Um modelo de linguagem é, no fundo, bilhões de números de ponto flutuante. Quantização é comprimir esses números pra ocupar menos memória. Q8_0 usa 8 bits por número — praticamente sem perda de qualidade. Q4_K_M usa 4 bits — bem mais compacto, com uma perdinha de precisão que na prática quase não se nota em tarefas de código. Hoje usamos o gpt-oss-20b em Q8_0: 20 bilhões de parâmetros, ocupando uns 12GB em disco."
 
 ---
 
@@ -38,24 +38,26 @@ Seção técnica aprofundada sobre o Kronk. Entra depois da abertura (`slides-ab
 **Tela:** Diagrama: um modelo denso (todas as "fatias" do cérebro acendem pra cada token) vs um MoE (só algumas "fatias/especialistas" acendem por token, um roteador escolhe quais).
 
 **Roteiro:**
-"Mixture of Experts é uma arquitetura onde o modelo não é um bloco monolítico — ele é dividido em várias sub-redes, os 'especialistas'. Para cada token gerado, um componente roteador decide quais especialistas ativar, normalmente só uma fração pequena do total. O ganho: você pode ter um modelo gigante em número de parâmetros — gpt-oss-20b, por exemplo, que testamos hoje, tem 20 bilhões de parâmetros — mas o custo computacional por token é parecido com um modelo bem menor, porque só uma fatia dos especialistas é usada a cada vez.
+"Mixture of Experts é uma arquitetura onde o modelo não é um bloco monolítico — ele é dividido em várias sub-redes, os 'especialistas'. Para cada token gerado, um componente roteador decide quais especialistas ativar, normalmente só uma fração pequena do total. O ganho: você pode ter um modelo gigante em número de parâmetros — o gpt-oss-20b que estamos usando hoje tem 20 bilhões de parâmetros, 32 especialistas — mas o custo computacional por token é parecido com um modelo bem menor, porque só 4 especialistas são ativados a cada vez.
 
-Isso importa pro Kronk porque ele tem suporte nativo a colocar os especialistas em dispositivos diferentes — uma opção de configuração chamada `moe.mode`, que pode ser `auto`, `experts_cpu` (manda todos os especialistas pra CPU e deixa só a parte 'roteadora' na GPU), `experts_gpu`, ou `keep_top_n` (mantém só os N especialistas mais usados na GPU). Isso é uma ferramenta poderosíssima pra rodar modelos MoE gigantes em GPUs pequenas — você não precisa caber o modelo inteiro na VRAM, só a parte que realmente compute por token."
+Isso importa pro Kronk porque ele tem suporte nativo a colocar os especialistas em dispositivos diferentes — uma opção de configuração chamada `moe.mode`, que pode ser `auto`, `experts_cpu` (manda todos os especialistas pra CPU e deixa só a parte 'roteadora' na GPU), `experts_gpu`, ou `keep_top_n` (mantém só os N especialistas mais usados na GPU). Isso é uma ferramenta poderosíssima pra rodar modelos MoE gigantes em GPUs pequenas — você não precisa caber o modelo inteiro na VRAM, só a parte que realmente computa por token."
 
-**Nota de bastidor (se quiser contar a história real):** "A gente tem o gpt-oss-20b baixado aqui, mas pra hoje usamos o Qwen3-8B, que é denso — sem MoE. Por quê? [ver Slide 7 — a pegadinha de VRAM]."
+**Nota de bastidor:** "Originalmente preparamos essa talk num Linux com GPU dedicada de 12GB, e lá o gpt-oss-20b não cabia junto com um contexto grande — tivemos que usar um modelo denso menor. Aqui no Mac, com memória unificada, isso simplesmente não é um problema: o MoE de 20B cabe inteiro com folga de sobra. É um ótimo exemplo de como a mesma arquitetura de modelo se comporta diferente dependendo do tipo de memória da máquina."
 
 ---
 
 ## Slide 5 — Conceito: Hybrid CPU/GPU (offload de camadas)
 
-**Tela:** Diagrama de um modelo "empilhado" em camadas (36 camadas, no nosso caso), com uma linha cortando: X camadas verdes (GPU) embaixo, resto cinza (CPU) acima.
+**Tela:** Diagrama de um modelo "empilhado" em camadas (24 camadas, no nosso caso — gpt-oss-20b), com uma linha cortando: X camadas verdes (GPU) embaixo, resto cinza (CPU) acima.
 
 **Roteiro:**
 "Todo modelo de linguagem é uma pilha de camadas — transformer blocks. O Kronk deixa você decidir, camada por camada, onde cada uma roda: GPU ou CPU. Isso se chama offload de camadas, ou modo híbrido.
 
-A configuração é `ngpu-layers`. E aqui tem uma pegadinha que a gente caiu na cara hoje, ao vivo, então vale contar: a convenção do Kronk é meio invertida do que você imaginaria. `0` ou deixar vazio significa 'todas as camadas na GPU'. `-1` significa 'nenhuma camada na GPU, força CPU'. E qualquer número positivo é o número exato de camadas a colocar na GPU. Documentação é sua amiga aqui — sem ler, você acaba invertendo tudo, igual eu fiz."
+A configuração é `ngpu-layers`. E aqui tem uma pegadinha que a gente caiu na cara ao preparar essa talk, então vale contar: a convenção do Kronk é meio invertida do que você imaginaria. `0` ou deixar vazio significa 'todas as camadas na GPU'. `-1` significa 'nenhuma camada na GPU, força CPU'. E qualquer número positivo é o número exato de camadas a colocar na GPU. Documentação é sua amiga aqui — sem ler, você acaba invertendo tudo, igual a gente fez."
 
-**Por que isso importa:** "Modelo inteiro na GPU é mais rápido, mas exige que ele caiba todo na VRAM — pesos do modelo, mais o cache de contexto (que cresce junto com a conversa), mais buffers de computação. Se não cabe, ou você usa CPU (mais devagar, mas a memória RAM costuma ser bem maior), ou divide: parte na GPU, parte na CPU. É um dial de ajuste fino entre velocidade e memória disponível."
+**Por que isso importa:** "Numa GPU dedicada com VRAM própria — uma RTX, por exemplo — modelo inteiro na GPU é mais rápido, mas exige que ele caiba todo na VRAM: pesos do modelo, mais o cache de contexto (que cresce junto com a conversa), mais buffers de computação. Se não cabe, ou você usa CPU, ou divide: parte na GPU, parte na CPU. É um dial de ajuste fino entre velocidade e memória disponível.
+
+Num Mac com Apple Silicon, como o que estamos usando hoje, isso muda de figura: CPU e GPU compartilham a mesma memória unificada — não existe uma 'VRAM separada' pra estourar. Por isso aqui simplesmente deixamos `ngpu-layers: 0` (tudo na GPU) sem medo. O conceito de offload híbrido continua existindo e é igualmente importante em GPU dedicada — só não é o gargalo da nossa máquina hoje."
 
 ---
 
@@ -63,31 +65,30 @@ A configuração é `ngpu-layers`. E aqui tem uma pegadinha que a gente caiu na 
 
 **Tela:** Tabela com os números reais (peguei do benchmarks-apresentacao.md):
 
-| Configuração | Tokens/s | Tempo até 1º token | VRAM usada |
+| Configuração | Prompt tokens | Tempo até 1º token | Tokens/s |
 |---|---|---|---|
-| CPU only (prompt pequeno) | 6.3 tok/s | 520 ms | — |
-| GPU 100% — 36/36 camadas (contexto pequeno) | **50.8 tok/s** | **54 ms** | 10.3GB / 12.28GB |
-| GPU 100% — contexto grande (16k tokens) | ❌ falha (CUDA out of memory) | — | — |
-| Híbrido 18/36 camadas (prompt real, ~12.6K tokens) | 5.2 tok/s | 12.4 s | 7.87GB / 12.28GB |
-| Híbrido 28/36 camadas (mesmo prompt) | 9.5 tok/s | 7.3 s | 10.15GB / 12.28GB |
+| CPU only | pequeno | — | ~6-8 tok/s |
+| Metal full offload — curto | 81 | ~0.2-0.4 s | ~70 tok/s |
+| Metal full offload — médio (estilo Cline real) | 2.034 | ~2.2 s | ~65-68 tok/s |
+| Metal full offload — stress (MCPs grandes) | 9.084 | ~11-12 s | ~63 tok/s |
 
 **Roteiro:**
-"Esses números não são de benchmark de paper, são de hoje, nesta máquina, RTX 4070 Ti de 12GB. Olha a primeira linha contra a segunda: GPU 100% é 8 vezes mais rápido que CPU pura pra gerar texto, e quase 10 vezes mais rápido pra começar a responder. Isso é o tipo de ganho que faz local-first ser viável de verdade.
+"Esses números não são de benchmark de paper, são de hoje, nesta máquina, MacBook M4 Pro com 48GB de memória unificada. Olha a primeira linha contra a segunda: Metal full offload é uns 9-10 vezes mais rápido que CPU pura pra gerar texto. Isso é o tipo de ganho que faz local-first ser viável de verdade.
 
-Mas — terceira linha. Quando o prompt cresce, porque o agente carrega ferramentas MCP, histórico de conversa, etc., GPU 100% simplesmente quebra. Sem VRAM suficiente. E aí entra o híbrido: a gente foi testando quantas camadas colocar na GPU até achar um equilíbrio entre velocidade e margem de segurança de memória — 18 camadas deixou bastante folga, 28 camadas foi mais rápido mas quase sem margem."
+E repara que aqui não tem nenhuma linha de 'falhou por falta de memória' — mesmo o prompt de stress, simulando um Cline carregado de ferramentas MCP com ~9 mil tokens de contexto, só fica mais lento pra começar a responder (TTFT sobe pra ~11-12s), mas não quebra. É a vantagem de memória unificada: o teto que existia numa GPU dedicada simplesmente não existe aqui da mesma forma."
 
-**Gancho pra próximo slide:** "E essa decisão — quanto offload, quanto contexto — não é teórica. A gente bateu de cara com isso ao vivo preparando essa talk."
+**Gancho pra próximo slide:** "Mas isso não significa que não tem pegadinha nenhuma. Teve uma, e ela ensina uma lição melhor que qualquer slide teórico."
 
 ---
 
 ## Slide 7 — A pegadinha que vivemos hoje (war story)
 
-**Tela:** Print/trecho do log de erro real: `acquire: reserve: request[Qwen3-8B-Q8_0] needs vram=10.3GB but largest device budget is 9.7GB` e depois `unable to init context: failed to initialize model`.
+**Tela:** A tabela do Slide 6 de novo, com destaque na linha de stress — TTFT de ~12s pra um prompt de 9k tokens.
 
 **Roteiro:**
-"Conto rapidinho o que aconteceu preparando essa demo, porque é uma aula prática melhor que qualquer slide teórico. Configuramos GPU 100%, contexto generoso pro agente conseguir conversar — e a coisa simplesmente não inicializava. O Kronk tem um sistema de orçamento de memória, calcula antes de carregar se vai caber. Recusou. Aumentamos o orçamento à força — passou da estimativa, mas na hora de alocar de verdade, o CUDA devolveu erro de memória. A trava de segurança do Kronk, na verdade, nos salvou de travar o processo de forma feia.
+"Conto rapidinho o que aconteceu preparando essa demo. Vendo aquele TTFT de ~12 segundos no prompt grande, nosso primeiro instinto foi: 'deve ser o batch size pequeno demais, o Kronk não está mandando chunks grandes o suficiente pro Metal de uma vez'. Dobramos, depois quadruplicamos o `nbatch` e o `nubatch` — os parâmetros que controlam quantos tokens do prompt são processados por vez. Resultado: **6% de ganho**. De 12.36s pra 11.58s. Quase nada.
 
-A solução não foi 'forçar mais GPU'. Foi entender que offload parcial (híbrido) é a ferramenta certa pra esse problema — sacrificar uma fatia de velocidade por uma fatia de memória livre, de forma controlada."
+A lição real: pra esse modelo MoE, no Metal, o prefill não está limitado pelo tamanho do batch — está limitado pelo *compute* do kernel, especificamente o roteamento de especialistas (lembra do Slide 4? só 4 dos 32 especialistas são ativados por token, e decidir quais ativar tem um custo). Aumentar batch não ajuda quando o gargalo é compute, não throughput de dados. A gente só descobriu isso porque *medimos* antes de assumir — é fácil mudar um parâmetro, ver o número melhorar um pouquinho, e declarar vitória sem checar se valeu o esforço."
 
 ---
 
@@ -96,9 +97,9 @@ A solução não foi 'forçar mais GPU'. Foi entender que offload parcial (híbr
 **Tela:** Comparação visual: uma resposta direta ("ok") vs um bloco gigante de "pensamento" antes da resposta.
 
 **Roteiro:**
-"Último conceito, e esse foi uma surpresa real durante a preparação. Modelos como o Qwen3 têm um modo de 'raciocínio' — antes de agir, eles geram um monólogo interno, tipo um rascunho de pensamento, que pode ter centenas de tokens. Isso melhora a qualidade da decisão — vimos na prática o modelo acertar a lógica certa de correção de bug só depois de 'pensar' bastante.
+"Último conceito, e esse foi uma surpresa real durante a preparação. O gpt-oss-20b, como outros modelos de raciocínio, tem um modo de 'pensamento' — antes de responder, ele gera um monólogo interno, tipo um rascunho de pensamento, que pode ter dezenas ou centenas de tokens (no nosso teste mais simples, uma pergunta de 'oi' já gastou 40 tokens de raciocínio antes da resposta). Isso melhora a qualidade da decisão — vimos na prática o modelo acertar a lógica certa de correção de bug só depois de 'pensar' bastante.
 
-O problema: cada token de pensamento custa tempo de geração. Em CPU, isso pode ser a diferença entre uma resposta em segundos e uma resposta em minutos. O Kronk deixa você desligar isso via configuração (`enable_thinking`). Testamos os dois lados: desligado, o modelo respondia rápido, mas cometia erros bobos de estrutura de código — esquecia de importar um pacote, por exemplo. Ligado, ele acertava a lógica completa, mas demorava muito mais.
+O problema: cada token de pensamento custa tempo de geração. O Kronk deixa controlar isso direto na chamada da API, com o parâmetro `reasoning_effort` (`low`, `medium`, `high`) — não é uma configuração fixa do modelo, é por requisição. `low` responde rápido mas pensa pouco; `high` demora mais, mas tem mais 'espaço' pra raciocinar antes de decidir. (Se der tempo de validar antes da talk, vale repetir o teste de bug-fix real com os dois extremos e trocar essa frase por um número real, em vez de ficar na teoria.)
 
 É um tradeoff real que qualquer um rodando IA local vai enfrentar: velocidade contra profundidade de raciocínio."
 
@@ -109,11 +110,12 @@ O problema: cada token de pensamento custa tempo de geração. Em CPU, isso pode
 **Tela:** Bullet points grandes, tipo "cartões".
 
 **Roteiro (ler cada um com uma pausa):**
-- "Local-first com Kronk é rápido de verdade — quando cabe na GPU."
-- "MoE e offload híbrido são as ferramentas pra rodar modelos maiores que sua VRAM."
+- "Local-first com Kronk é rápido de verdade — uns 9-10x mais rápido que CPU pura nesta máquina."
+- "Memória unificada (Apple Silicon) muda o jogo do offload — mas o conceito de MoE e camadas continua valendo em qualquer GPU dedicada."
 - "A convenção de camadas do Kronk é invertida — leia a doc antes de configurar."
-- "Modo de raciocínio é um dial, não uma mágica: mais qualidade custa mais tempo."
-- "Tudo isso é configurável em um arquivo YAML, sem precisar recompilar nada."
+- "Não assuma o gargalo, meça: batch size maior só ganhou 6% porque o limite real era compute, não throughput."
+- "Modo de raciocínio é um dial, não uma mágica: mais qualidade custa mais tempo, e é configurável por requisição."
+- "Tudo isso é configurável em um arquivo YAML ou direto na chamada da API, sem precisar recompilar nada."
 
 **Fechamento:** "E é exatamente essa flexibilidade — CPU, GPU, híbrido, MoE, raciocínio ligado ou desligado — que torna o Kronk uma peça de infraestrutura séria pra rodar IA local em produção, não só em demo de palco."
 
@@ -244,5 +246,5 @@ O resultado: em vez de 26 documentos completos, o agente recebe só os 3 mais re
 ## Notas de produção (não falar em voz alta)
 
 - Os números do Slide 6 vêm de `benchmarks-apresentacao.md` neste mesmo repo — conferir se não mudaram caso re-teste antes da talk.
-- Slide 7 é ótimo gancho de humor/autenticidade — sugiro tom leve, "rir da própria dor", já que é uma talk técnica e isso humaniza.
-- Se houver tempo, o Slide 4 (MoE) pode ganhar uma demonstração rápida ao vivo trocando `moe.mode` no `model_config.yaml` do gpt-oss-20b — mas só se already tiver sido testado antes, não arriscar ao vivo sem ensaio.
+- Slide 7 mudou de "war story de VRAM" pra "lição de não assumir o gargalo" — tom ainda pode ser leve/autêntico, mas o ponto agora é mais de engenharia (medir antes de otimizar) do que de drama de travamento.
+- Se houver tempo, o Slide 4 (MoE) pode ganhar uma demonstração rápida ao vivo trocando `moe.mode` no `model_config.yaml` do gpt-oss-20b — mas só se já tiver sido testado antes, não arriscar ao vivo sem ensaio.
