@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-O cadastro de clientes aceita qualquer string no campo CPF, o que tem causado falhas na integração com a transportadora quando o documento é inválido.
+Na auditoria pós-incidente encontramos que o cadastro de clientes aceita literalmente qualquer string no campo CPF — a NexCore nunca implementou validação nenhuma, nem de formato. Isso já causou falhas na integração com a transportadora quando o documento cadastrado é inválido, e é o tipo de corte de canto que só aparece quando alguém finalmente vai ler o código com atenção.
 
 ## Critérios de Aceite (AC)
 1. CPF deve ter 11 dígitos numéricos.

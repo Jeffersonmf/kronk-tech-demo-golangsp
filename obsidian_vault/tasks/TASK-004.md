@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Atualmente os clientes não têm visibilidade de quando o pedido é enviado — o suporte recebe tickets repetidos perguntando "cadê meu pedido?". O time de produto quer uma notificação simples por e-mail disparada no momento em que o status do pedido muda para "enviado".
+No contrato de entrega, a NexCore listou "sistema de notificações" como item concluído. Na auditoria descobrimos que é um `log.Println` num canto do código, sem nenhuma integração de e-mail por trás. Resultado prático: clientes não têm visibilidade de quando o pedido é enviado, e o suporte recebe tickets repetidos perguntando "cadê meu pedido?". Precisamos entregar de verdade o que já foi cobrado.
 
 ## Critérios de Aceite (AC)
 1. **Disparo:** Quando o status de um pedido muda para `shipped`, um evento de notificação é emitido.

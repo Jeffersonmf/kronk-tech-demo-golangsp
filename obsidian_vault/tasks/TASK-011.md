@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Os preços são armazenados como inteiros em centavos (ex: `1050` = R$ 10,50), mas hoje são exibidos sem formatação nas telas e nos recibos.
+Os preços são armazenados como inteiros em centavos (ex: `1050` = R$ 10,50) — escolha de modelagem correta — mas a NexCore nunca implementou a camada de formatação na ponta, então telas e recibos exibem o número cru. Mais de um cliente já abriu chamado achando que um produto de R$ 10,50 custava "1050 reais".
 
 ## Critérios de Aceite (AC)
 1. Converter centavos para o formato `R$ 10,50`.

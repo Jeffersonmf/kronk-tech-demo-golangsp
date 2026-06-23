@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Atualmente os clientes podem solicitar uma devolução, mas não há forma automatizada de processar o reembolso quando o item devolvido chega de volta ao armazém. Os reembolsos são processados manualmente pelo suporte, o que é lento e propenso a erros.
+A documentação que a NexCore deixou descreve um "fluxo de reembolso automatizado" em alto nível, mas o código correspondente nunca existiu — os clientes podem solicitar devolução, mas todo reembolso é processado manualmente pelo suporte, na régua, item por item. É lento, é propenso a erro humano, e foi outra das promessas do contrato que não virou código.
 
 ## Critérios de Aceite (AC)
 1. **Devolução recebida:** Quando uma devolução é marcada como "recebida", uma solicitação de reembolso é criada automaticamente.

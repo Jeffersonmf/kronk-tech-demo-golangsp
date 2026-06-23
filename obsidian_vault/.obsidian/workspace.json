@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tasks/TASK-001.md",
+                "file": "tasks/TASK-011.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TASK-001"
+              "title": "TASK-011"
             }
           }
         ]
@@ -185,29 +185,31 @@
   },
   "active": "5eae778553a406cf",
   "lastOpenFiles": [
-    "tasks/README.md.tmp.19781.1cb3f0d6bda1",
+    "tasks/TASK-004.md",
     "tasks/TASK-002.md",
+    "tasks/TASK-003.md",
     "tasks/TASK-001.md",
+    "tasks/README.md",
+    "tasks/TASK-025.md.tmp.19781.bbb2f9527e97",
+    "tasks/TASK-024.md.tmp.19781.c5c0b0511e3f",
+    "tasks/TASK-023.md.tmp.19781.de5f5b59d1c5",
+    "tasks/TASK-022.md.tmp.19781.177013f4c20b",
+    "tasks/TASK-021.md.tmp.19781.d5fe3795e54e",
+    "tasks/TASK-020.md.tmp.19781.0903c18ef694",
+    "tasks/TASK-019.md.tmp.19781.4e465d92fb7d",
+    "tasks/TASK-018.md.tmp.19781.0bdd7684200c",
+    "tasks/TASK-017.md.tmp.19781.986c3975a96b",
+    "tasks/TASK-016.md.tmp.19781.52b2538185a7",
     "Untitled.canvas",
     "tasks/TASK-025.md",
-    "tasks/README.md.tmp.156893.a180c3334b75",
-    "tasks/TASK-025.md.tmp.156893.cc77bd3262c0",
     "tasks/TASK-024.md",
-    "tasks/TASK-024.md.tmp.156893.4fc0ae112892",
     "tasks/TASK-023.md",
-    "tasks/TASK-023.md.tmp.156893.4d0b04fd960a",
     "tasks/TASK-022.md",
-    "tasks/TASK-022.md.tmp.156893.8b56d72c4917",
     "tasks/TASK-021.md",
-    "tasks/TASK-021.md.tmp.156893.3d941554a4f0",
     "tasks/TASK-020.md",
-    "tasks/TASK-020.md.tmp.156893.e151f305cbaa",
     "tasks/TASK-019.md",
-    "tasks/TASK-019.md.tmp.156893.4e5133c492bf",
     "tasks/TASK-018.md",
-    "tasks/TASK-018.md.tmp.156893.144e2a896ca4",
     "tasks/TASK-017.md",
-    "tasks/TASK-017.md.tmp.156893.6c47b4bcf27e",
     "tasks/TASK-016.md",
     "tasks/TASK-015.md",
     "tasks/TASK-014.md",
@@ -219,8 +221,6 @@
     "tasks/TASK-008.md",
     "tasks/TASK-007.md",
     "tasks/TASK-006.md",
-    "tasks/TASK-005.md",
-    "tasks/TASK-004.md",
-    "tasks/README.md"
+    "tasks/TASK-005.md"
   ]
 }

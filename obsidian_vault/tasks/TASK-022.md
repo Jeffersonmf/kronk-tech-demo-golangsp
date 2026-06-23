@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Os testes de integração do fluxo de envio dependem de chamar a API real da transportadora para obter um código de rastreio. Precisamos de um gerador local para usar em ambientes de teste.
+A NexCore não deixou nenhum fixture ou mock pro fluxo de envio — os testes de integração que existem dependem de chamar a API real da transportadora pra obter um código de rastreio, o que torna a suíte lenta, instável e dependente de internet. Precisamos de um gerador local pra usar em ambientes de teste.
 
 ## Critérios de Aceite (AC)
 1. Gerar um código no formato `BR` + 9 dígitos + `BR` (padrão dos Correios), ex: `BR123456789BR`.

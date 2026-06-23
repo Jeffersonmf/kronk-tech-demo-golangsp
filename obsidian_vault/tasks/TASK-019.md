@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Os preços exibidos não incluem impostos. Para o resumo do checkout, precisamos calcular o valor do imposto separadamente, usando uma alíquota fixa para simplificar.
+Os preços exibidos não incluem impostos — o time financeiro só descobriu isso quando começou a tentar reconciliar as notas fiscais com o que a plataforma registrava, e percebeu que o checkout da NexCore nunca calculou imposto nenhum, em nenhum lugar. Para o resumo do checkout, precisamos calcular o valor do imposto separadamente, usando uma alíquota fixa para simplificar por enquanto.
 
 ## Critérios de Aceite (AC)
 1. Aplicar uma alíquota fixa de 10% sobre o subtotal do pedido.

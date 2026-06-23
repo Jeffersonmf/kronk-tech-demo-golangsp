@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-A empresa abriu um segundo centro de distribuição. O serviço de inventário hoje só lida com o estoque de um único depósito; precisamos somar o estoque de um produto considerando todos os depósitos.
+A ZYX Commerce acabou de abrir um segundo centro de distribuição — sinal de que o negócio está crescendo de novo depois do estrago do incidente. O problema é que o serviço de inventário, do jeito que a NexCore desenhou, só sabe lidar com o estoque de um único depósito; precisamos somar o estoque de um produto considerando todos os depósitos antes que o segundo CD entre em operação.
 
 ## Critérios de Aceite (AC)
 1. Receber o estoque por depósito e retornar o total somado.

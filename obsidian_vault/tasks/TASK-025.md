@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-A equipe de infraestrutura precisa de um endpoint simples para que o load balancer verifique se o serviço está no ar antes de liberar tráfego para uma nova instância.
+A NexCore nunca deixou nem o básico de observabilidade pronto — sem health check, a infraestrutura não tinha como saber com confiança se uma instância nova estava de fato no ar antes de liberar tráfego pra ela. O time de infra está retomando esses fundamentos agora que o incêndio principal foi apagado.
 
 ## Critérios de Aceite (AC)
 1. `GET /health` retorna status HTTP 200.

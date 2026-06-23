@@ -5,7 +5,7 @@
 - [ ] Responsável: Em andamento
 
 ## Contexto
-A página de catálogo de produtos atualmente só suporta listar todos os produtos. Conforme o catálogo cresce para algumas centenas de SKUs, os clientes precisam de uma forma de filtrar os resultados por categoria e faixa de preço.
+A "busca" que a NexCore entregou é, na prática, a listagem completa do catálogo sem nenhum filtro — funcionava na demonstração de aceite porque o catálogo de teste tinha 20 produtos. Hoje, com algumas centenas de SKUs reais, os clientes não têm forma de filtrar por categoria ou faixa de preço, e o time de produto está recebendo reclamação direta sobre isso.
 
 ## Critérios de Aceite (AC)
 1. **Filtro de categoria:** Usuários podem filtrar a lista de produtos por uma ou mais categorias.

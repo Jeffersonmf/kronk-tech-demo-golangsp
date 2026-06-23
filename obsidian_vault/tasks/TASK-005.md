@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-A plataforma atualmente usa um login caseiro de usuário/senha + token de sessão. Vários clientes corporativos estão pedindo "Login com Google" / "Login com Microsoft" para que seus funcionários possam usar SSO ao fazer pedidos em volume.
+A plataforma usa o login caseiro de usuário/senha + token de sessão que a NexCore implementou — funcional, mas sem nenhuma opção de SSO, porque "não estava no MVP". Agora que a ZYX está voltando a fechar contratos corporativos, vários clientes grandes estão pedindo "Login com Google" / "Login com Microsoft" para que seus funcionários possam usar SSO ao fazer pedidos em volume. É a primeira vez desde o incidente que estamos construindo algo novo em vez de só consertar herança.
 
 ## Critérios de Aceite (AC)
 1. **Login OAuth2:** Usuários podem se autenticar via pelo menos um provedor OAuth2 externo (Google).

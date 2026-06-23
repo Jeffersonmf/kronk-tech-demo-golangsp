@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-O novo programa de fidelidade dá pontos aos clientes proporcionalmente ao valor gasto, para troca por descontos futuros.
+Com o backlog de débito técnico da NexCore finalmente sob controle, a diretoria aprovou o primeiro investimento em algo novo desde o incidente: um programa de fidelidade que dá pontos aos clientes proporcionalmente ao valor gasto, para troca por descontos futuros. É um bom sinal — estamos voltando a construir, não só a apagar incêndio.
 
 ## Critérios de Aceite (AC)
 1. O cliente ganha 1 ponto para cada R$ 10,00 gastos, arredondado para baixo.
