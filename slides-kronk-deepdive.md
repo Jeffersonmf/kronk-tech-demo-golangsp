@@ -24,7 +24,61 @@ Seção técnica aprofundada sobre o Kronk. Entra depois da abertura (`slides-ab
 
 ---
 
-## Slide 3 — Conceito: Quantização (a base de tudo)
+## Slide 3 — Por dentro do Kronk Server: o que sobe quando você dá `kronk server start`
+
+**Tela:** Trecho real do log de startup (`/tmp/kronk.log` de hoje), com 4 linhas em destaque:
+```
+"status":"api router started","host":"0.0.0.0:11435"
+"status":"debug v1 router started","host":"0.0.0.0:11445"
+"status":"local mcp server started","host":"127.0.0.1:9000"
+"status":"start auth server"
+```
+
+**Roteiro:**
+"O Slide 2 mostrou o Kronk como uma caixa preta no meio do diagrama. Vamos abrir essa caixa rapidinho, com log real de hoje, não slide teórico. Quando você dá `kronk server start`, sobem pelo menos quatro coisas: o **router da API** (porta 11435, é o `/v1/chat/completions` compatível com OpenAI que o Cline fala), um **router de debug** (11445, métricas e introspecção), um **serviço de auth** (JWT/API keys — hoje desligado porque é uso local, mas existe pra produção), e — detalhe curioso — um **servidor MCP nativo do próprio Kronk**, na porta 9000. Não é nenhum dos nossos dois MCPs de demo; é o Kronk se expondo via MCP por conta própria, pra outros agentes consultarem o estado dele direto.
+
+O ponto de fundo: isso não é um wrapper fininho em volta do llama.cpp. É um processo de servidor com superfície de operação real — roteamento, auth, observabilidade — parecido com qualquer outro serviço backend que vocês já rodam em Go."
+
+---
+
+## Slide 4 — Pool de modelos: por que carregar um modelo não é só "abrir o arquivo"
+
+**Tela:** Linha real do log de hoje:
+```
+"status":"resman-init","budget-percent":80,"ram-budget":"38.7GB",
+"max-models-in-pool":10
+```
+
+**Roteiro:**
+"O Kronk não trata modelo como 'um arquivo que você abre uma vez'. Ele tem um **pool de modelos** — igual um pool de conexões de banco, só que pra modelos GGUF carregados na memória. Três coisas que esse pool faz por você:
+
+Primeiro, **orçamento de memória**: por padrão, o Kronk só usa 80% da RAM/VRAM disponível pra modelos — aqui, hoje, isso virou um orçamento de 38.7GB. Se um modelo não cabe no orçamento, o Kronk **recusa carregar antes de tentar** em vez de só travar feio na hora de alocar — foi exatamente esse mecanismo de segurança que pegou a configuração original dessa talk, preparada num Linux com GPU dedicada de 12GB, antes da gente migrar pra esse Mac com memória unificada (mais sobre isso no Slide 7, quando chegarmos em MoE).
+
+Segundo, **múltiplos modelos ao mesmo tempo**: o pool aceita até 10 modelos residentes simultaneamente. Não é teórico — agora mesmo, nesta máquina, tem dois modelos carregados ao mesmo tempo: o `gpt-oss-20b` pra chat, e o `embeddinggemma` pra busca semântica do `vault_smart`. Cada um com seu próprio orçamento de memória, dividindo o mesmo processo Kronk.
+
+Terceiro, **TTL de ociosidade**: modelo sem uso por um tempo configurável é descarregado automaticamente, liberando memória pra outra coisa — sem você precisar gerenciar isso manualmente."
+
+---
+
+## Slide 5 — Cache incremental: por que o Cline não fica mais lento a cada turno
+
+**Tela:** Trecho do `model_config.yaml` com a opção comentada:
+```yaml
+incremental-cache: false   # Incremental message caching for agentic
+                           # workflows (Cline, OpenCode)
+```
+E o valor real que o servidor usa hoje, confirmado no log: `IncrementalCache[true]`.
+
+**Roteiro:**
+"Aqui está um detalhe que conecta direto com a demo de hoje. Uma conversa com o Cline não é uma pergunta isolada — é uma sequência de turnos, e cada turno novo reenvia **todo o histórico anterior** mais a mensagem nova. Sem cache, o modelo teria que reprocessar a conversa inteira do zero em todo turno — cada vez mais lento conforme a conversa cresce, porque o prefixo só aumenta.
+
+O **cache incremental de mensagens (IMC)** do Kronk guarda o estado interno (KV-cache) da conversa depois de cada turno. No turno seguinte, ele reaproveita esse estado e só processa de fato os tokens **novos** — a pergunta atual, não a conversa inteira de novo. Isso já vem **ligado por padrão** pensando exatamente em clientes agênticos como Cline e OpenCode, que reenviam histórico crescente a cada chamada.
+
+É por isso que os números de TTFT que vamos ver no próximo slide — tipo ~2.2s pra um prompt de 2 mil tokens — tendem a ficar ainda melhores turno a turno numa conversa real com o Cline, não pioram."
+
+---
+
+## Slide 6 — Conceito: Quantização (a base de tudo)
 
 **Tela:** Tabela rápida — F16 (sem perda) vs Q8_0 (quase sem perda) vs Q4_K_M (mais compacto, alguma perda).
 
@@ -33,7 +87,7 @@ Seção técnica aprofundada sobre o Kronk. Entra depois da abertura (`slides-ab
 
 ---
 
-## Slide 4 — Conceito: MoE (Mixture of Experts)
+## Slide 7 — Conceito: MoE (Mixture of Experts)
 
 **Tela:** Diagrama: um modelo denso (todas as "fatias" do cérebro acendem pra cada token) vs um MoE (só algumas "fatias/especialistas" acendem por token, um roteador escolhe quais).
 
@@ -46,7 +100,7 @@ Isso importa pro Kronk porque ele tem suporte nativo a colocar os especialistas 
 
 ---
 
-## Slide 5 — Conceito: Hybrid CPU/GPU (offload de camadas)
+## Slide 8 — Conceito: Hybrid CPU/GPU (offload de camadas)
 
 **Tela:** Diagrama de um modelo "empilhado" em camadas (24 camadas, no nosso caso — gpt-oss-20b), com uma linha cortando: X camadas verdes (GPU) embaixo, resto cinza (CPU) acima.
 
@@ -61,7 +115,7 @@ Num Mac com Apple Silicon, como o que estamos usando hoje, isso muda de figura: 
 
 ---
 
-## Slide 6 — Nossos números reais (testados hoje, nesta máquina)
+## Slide 9 — Nossos números reais (testados hoje, nesta máquina)
 
 **Tela:** Tabela com os números reais (peguei do benchmarks-apresentacao.md):
 
@@ -81,18 +135,18 @@ E repara que aqui não tem nenhuma linha de 'falhou por falta de memória' — m
 
 ---
 
-## Slide 7 — A pegadinha que vivemos hoje (war story)
+## Slide 10 — A pegadinha que vivemos hoje (war story)
 
-**Tela:** A tabela do Slide 6 de novo, com destaque na linha de stress — TTFT de ~12s pra um prompt de 9k tokens.
+**Tela:** A tabela do Slide 9 de novo, com destaque na linha de stress — TTFT de ~12s pra um prompt de 9k tokens.
 
 **Roteiro:**
 "Conto rapidinho o que aconteceu preparando essa demo. Vendo aquele TTFT de ~12 segundos no prompt grande, nosso primeiro instinto foi: 'deve ser o batch size pequeno demais, o Kronk não está mandando chunks grandes o suficiente pro Metal de uma vez'. Dobramos, depois quadruplicamos o `nbatch` e o `nubatch` — os parâmetros que controlam quantos tokens do prompt são processados por vez. Resultado: **6% de ganho**. De 12.36s pra 11.58s. Quase nada.
 
-A lição real: pra esse modelo MoE, no Metal, o prefill não está limitado pelo tamanho do batch — está limitado pelo *compute* do kernel, especificamente o roteamento de especialistas (lembra do Slide 4? só 4 dos 32 especialistas são ativados por token, e decidir quais ativar tem um custo). Aumentar batch não ajuda quando o gargalo é compute, não throughput de dados. A gente só descobriu isso porque *medimos* antes de assumir — é fácil mudar um parâmetro, ver o número melhorar um pouquinho, e declarar vitória sem checar se valeu o esforço."
+A lição real: pra esse modelo MoE, no Metal, o prefill não está limitado pelo tamanho do batch — está limitado pelo *compute* do kernel, especificamente o roteamento de especialistas (lembra do Slide 7? só 4 dos 32 especialistas são ativados por token, e decidir quais ativar tem um custo). Aumentar batch não ajuda quando o gargalo é compute, não throughput de dados. A gente só descobriu isso porque *medimos* antes de assumir — é fácil mudar um parâmetro, ver o número melhorar um pouquinho, e declarar vitória sem checar se valeu o esforço."
 
 ---
 
-## Slide 8 — Conceito: "Thinking mode" e o custo escondido do raciocínio
+## Slide 11 — Conceito: "Thinking mode" e o custo escondido do raciocínio
 
 **Tela:** Comparação visual: uma resposta direta ("ok") vs um bloco gigante de "pensamento" antes da resposta.
 
@@ -105,7 +159,7 @@ O problema: cada token de pensamento custa tempo de geração. O Kronk deixa con
 
 ---
 
-## Slide 9 — Resumo / Takeaways
+## Slide 12 — Resumo / Takeaways
 
 **Tela:** Bullet points grandes, tipo "cartões".
 
@@ -129,7 +183,7 @@ Essa seção entra bem antes do deep dive do Kronk (ou logo depois do "momento W
 
 ---
 
-## Slide 10 — A base compartilhada: lendo o vault
+## Slide 13 — A base compartilhada: lendo o vault
 
 **Tela:** trecho de código de `internal/vault/reader.go` — a função `LoadAll`.
 
@@ -154,7 +208,7 @@ func LoadAll(root string) ([]Document, error) {
 
 ---
 
-## Slide 11 — Cena 1: o servidor "burro" (`vault_dumb`)
+## Slide 14 — Cena 1: o servidor "burro" (`vault_dumb`)
 
 **Tela:** código completo do handler de `cmd/dumb/main.go` (é bem curto, cabe na tela):
 
@@ -187,7 +241,7 @@ Não tem filtro. Não tem busca. Não tem relevância. O agente pediu uma inform
 
 ---
 
-## Slide 12 — Cena 2, parte 1: montando o índice vetorial (`vault_smart`, setup)
+## Slide 15 — Cena 2, parte 1: montando o índice vetorial (`vault_smart`, setup)
 
 **Tela:** trecho de `cmd/smart/main.go` (a função `run`, parte de inicialização) lado a lado com um diagrama: Documentos → [Modelo de Embedding] → Vetores → [DuckDB + índice HNSW].
 
@@ -205,7 +259,7 @@ Esses vetores vão pra dentro de um banco DuckDB, criado na memória, na hora, c
 
 ---
 
-## Slide 13 — Cena 2, parte 2: a busca de verdade (`search_vault`)
+## Slide 16 — Cena 2, parte 2: a busca de verdade (`search_vault`)
 
 **Tela:** trecho de `internal/store/duckdb.go`, a função `Search`, com destaque na query SQL.
 
@@ -225,7 +279,7 @@ O resultado: em vez de 26 documentos completos, o agente recebe só os 3 mais re
 
 ---
 
-## Slide 14 — Lado a lado: mesma pergunta, dois caminhos
+## Slide 17 — Lado a lado: mesma pergunta, dois caminhos
 
 **Tela:** tabela comparativa.
 
@@ -245,6 +299,7 @@ O resultado: em vez de 26 documentos completos, o agente recebe só os 3 mais re
 
 ## Notas de produção (não falar em voz alta)
 
-- Os números do Slide 6 vêm de `benchmarks-apresentacao.md` neste mesmo repo — conferir se não mudaram caso re-teste antes da talk.
-- Slide 7 mudou de "war story de VRAM" pra "lição de não assumir o gargalo" — tom ainda pode ser leve/autêntico, mas o ponto agora é mais de engenharia (medir antes de otimizar) do que de drama de travamento.
-- Se houver tempo, o Slide 4 (MoE) pode ganhar uma demonstração rápida ao vivo trocando `moe.mode` no `model_config.yaml` do gpt-oss-20b — mas só se já tiver sido testado antes, não arriscar ao vivo sem ensaio.
+- Os números do Slide 9 vêm de `benchmarks-apresentacao.md` neste mesmo repo — conferir se não mudaram caso re-teste antes da talk.
+- Slide 10 mudou de "war story de VRAM" pra "lição de não assumir o gargalo" — tom ainda pode ser leve/autêntico, mas o ponto agora é mais de engenharia (medir antes de otimizar) do que de drama de travamento.
+- Se houver tempo, o Slide 7 (MoE) pode ganhar uma demonstração rápida ao vivo trocando `moe.mode` no `model_config.yaml` do gpt-oss-20b — mas só se já tiver sido testado antes, não arriscar ao vivo sem ensaio.
+- Slides 3-5 (arquitetura interna, pool de modelos, cache incremental) são novos — ensaiar com o log real (`/tmp/kronk.log`) aberto numa aba, caso queiram mostrar a linha de log de verdade em vez de só o trecho colado no slide.

@@ -5,7 +5,7 @@
 - [ ] Responsável: Agente de IA
 
 ## Contexto
-Nossa plataforma de e-commerce está enfrentando um bug crítico: alguns produtos estão ficando com estoque negativo durante eventos de alto tráfego (promoções/flash sales).
+Esse é o incidente que deu origem a todo o backlog deste vault (ver `obsidian_vault/tasks/README.md`): a plataforma reescrita pela NexCore foi pra produção sem testar concorrência de verdade, e durante a primeira campanha promocional grande depois da entrega, vendemos produtos que não existiam mais no estoque — pedidos com **estoque negativo** sob alto tráfego (promoções/flash sales).
 
 ## Critérios de Aceite (AC)
 1.  **Atomicidade:** A redução de estoque deve ser atômica.
@@ -24,4 +24,4 @@ Nossa plataforma de e-commerce está enfrentando um bug crítico: alguns produto
 - O teste deve passar com a flag `-race` habilitada.
 
 ## Nota da Demo
-Esta é a **única** tarefa neste vault que o agente de IA precisa de fato resolver durante a demo ao vivo. As tarefas TASK-002 a TASK-007 são itens de backlog não relacionados, mantidos neste vault como "ruído" realista — veja `obsidian_vault/tasks/README.md` para entender por que existem. Um agente baseado em retrieval (Kronk + RAG) deve trazer esta tarefa (e `fake_project/internal/inventory/service.go`) como contexto relevante e ignorar o restante; um agente que carrega o vault inteiro como contexto bruto vai trazer todas elas.
+Esta é a **única** tarefa neste vault que o agente de IA precisa de fato resolver durante a demo ao vivo. As tarefas TASK-002 a TASK-025 são débito técnico herdado da NexCore, mantidas neste vault como "ruído" realista — veja `obsidian_vault/tasks/README.md` para entender por que existem. Um agente baseado em retrieval (Kronk + RAG) deve trazer esta tarefa (e `fake_project/internal/inventory/service.go`) como contexto relevante e ignorar o restante; um agente que carrega o vault inteiro como contexto bruto vai trazer todas elas.

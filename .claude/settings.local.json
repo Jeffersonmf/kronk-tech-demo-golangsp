@@ -173,7 +173,9 @@
       "Bash(~/go/bin/gopls version *)",
       "Bash(~/go/bin/gopls api-json *)",
       "Bash(/Users/jeffersonferreira/.local/share/mise/installs/go/1.26.0/bin/go version *)",
-      "WebFetch(domain:www.iceloshop.com.br)"
+      "WebFetch(domain:www.iceloshop.com.br)",
+      "Bash(grep -E \"\\\\.obsidian/|\\\\.canvas$|\\\\.base$\")",
+      "Bash(pip3 install *)"
     ]
   }
 }
