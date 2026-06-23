@@ -5,7 +5,7 @@
 - [ ] Responsável: Em andamento
 
 ## Contexto
-A listagem de produtos retorna todos os itens de uma vez. Com o catálogo crescendo, isso fica lento e a interface ainda não tem como exibir "página 2", "página 3", etc.
+A listagem de produtos retorna todos os itens de uma vez — outro ponto que a NexCore justificou como "suficiente pro MVP" e nunca revisitou. Com o catálogo real crescendo bem além do que foi testado na entrega, isso já fica visivelmente lento, e a interface nem tem como exibir "página 2", "página 3", etc.
 
 ## Critérios de Aceite (AC)
 1. A função recebe a lista completa, o número da página (começando em 1) e o tamanho da página.

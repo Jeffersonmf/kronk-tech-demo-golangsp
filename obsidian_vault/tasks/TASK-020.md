@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Um bug no frontend permite que o mesmo produto seja adicionado duas vezes como itens separados no carrinho, em vez de aumentar a quantidade de um único item.
+Um bug que já existia na entrega original da NexCore permite que o mesmo produto seja adicionado duas vezes como itens separados no carrinho, em vez de aumentar a quantidade de um único item — passou despercebido até clientes começarem a reclamar de recibos com a mesma linha de produto repetida.
 
 ## Critérios de Aceite (AC)
 1. Itens com o mesmo `ProductID` devem ser mesclados em um único item.

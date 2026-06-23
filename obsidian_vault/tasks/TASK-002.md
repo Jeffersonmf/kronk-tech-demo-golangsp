@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-O time de marketing quer começar a rodar campanhas promocionais com códigos de desconto (ex: `SUMMER10`, `WELCOME20`). Atualmente o fluxo de checkout não tem o conceito de cupom — os totais são calculados apenas a partir do preço e quantidade dos produtos.
+O time de marketing quer voltar a rodar campanhas promocionais com códigos de desconto (ex: `SUMMER10`, `WELCOME20`) — algo que já fazíamos na plataforma antiga e que a NexCore simplesmente não incluiu na reescrita, mesmo estando no escopo original do contrato. Hoje o checkout não tem o conceito de cupom — os totais são calculados apenas a partir do preço e quantidade dos produtos.
 
 ## Critérios de Aceite (AC)
 1. **Busca do código:** O sistema deve validar um código de cupom contra uma lista de promoções ativas.

@@ -1,47 +1,28 @@
-# Vault de Tasks — propósito
+# Backlog — Plataforma de E-commerce (ZYX Commerce)
 
-Este vault simula o backlog de um pequeno time de e-commerce no Obsidian, usado como "fonte da verdade" para a demo do GolangSP. São 25 tasks (TASK-001 a TASK-025), todas no mesmo formato: **Status / Contexto / Critérios de Aceite (AC) / Especificações Técnicas (TA) / Verificação**.
+## Contexto (leia antes de pegar qualquer task)
 
-## A task principal
+Em 2025 a ZYX Commerce contratou a **NexCore Consultoria** pra reescrever a plataforma de vendas do zero, prometendo "arquitetura moderna, escalável, pronta pra Black Friday". Entregaram em cima do prazo, fizeram a festa de encerramento de contrato, e foram embora.
 
-**TASK-001** é a "carro-chefe" da demo: descreve uma race condition real no inventário, em `fake_project/internal/inventory/service.go`, verificada com `go test -race`. É a única task que o agente de IA precisa de fato resolver ao vivo — é a mais densa do vault e a que está conectada a código real no repositório.
+Três semanas depois da entrega, durante a primeira campanha promocional grande, o time de operações começou a receber chamados de clientes reportando pedidos com **estoque negativo** — produtos vendidos que não existiam mais no depósito. Faturamento bloqueado, devolução em massa, e o time de suporte trabalhando no escuro porque a NexCore não documentou praticamente nada além do código em si.
 
-## As demais 24 (ruído de backlog)
+Desde então o time de plataforma (nós, internos, três pessoas) ficou com a missão de **estabilizar o que foi herdado**. Conforme fomos auditando o código, fomos encontrando mais problemas — nada tão grave quanto o do estoque, mas o suficiente pra preencher um backlog inteiro de débito técnico que devia ter sido pego em code review e não foi.
 
-**TASK-002 a TASK-025** são tarefas Go pequenas e autocontidas, cada uma cabendo numa única função/arquivo novo. Qualquer uma pode ser implementada do zero ao verde (`go test ./...`) em poucos minutos — boas candidatas extras pra implementar ao vivo, mas não fazem parte do roteiro principal da demo.
+Esse vault é esse backlog. Task por task, na ordem que fomos encontrando os problemas.
 
-| Task | Título |
-|---|---|
-| TASK-002 | Validação de Cupom de Desconto no Checkout |
-| TASK-003 | Busca de Produtos com Filtros de Categoria e Preço |
-| TASK-004 | Notificação por E-mail quando o Pedido for Enviado |
-| TASK-005 | Migrar Autenticação para OAuth2 |
-| TASK-006 | Exportação em CSV do Relatório Mensal de Vendas |
-| TASK-007 | Fluxo de Reembolso para Itens Devolvidos |
-| TASK-008 | Validar CPF no Cadastro de Cliente |
-| TASK-009 | Calcular Frete por Peso |
-| TASK-010 | Gerar Número de Pedido Sequencial |
-| TASK-011 | Formatar Valores Monetários em Reais |
-| TASK-012 | Calcular Média de Avaliações de Produto |
-| TASK-013 | Paginar Lista de Produtos |
-| TASK-014 | Ordenar Produtos por Preço |
-| TASK-015 | Mascarar Número de Cartão de Crédito em Logs |
-| TASK-016 | Calcular Pontos de Fidelidade por Compra |
-| TASK-017 | Gerar Slug a partir do Nome do Produto |
-| TASK-018 | Validar e Normalizar CEP |
-| TASK-019 | Calcular Imposto sobre o Pedido |
-| TASK-020 | Remover Itens Duplicados do Carrinho |
-| TASK-021 | Verificar Estoque em Múltiplos Depósitos |
-| TASK-022 | Gerar Código de Rastreio Fake para Testes |
-| TASK-023 | Calcular Desconto Progressivo por Quantidade |
-| TASK-024 | Validar Força de Senha no Cadastro |
-| TASK-025 | Endpoint de Health Check |
+## Prioridade máxima — bloqueando o negócio
 
-## Por que o vault tem esse tamanho
+- **[[TASK-001]]** — Race condition no módulo de inventário (`internal/inventory`). É a causa raiz do incidente de estoque negativo. Confirmado com `go test -race`: múltiplas goroutines conseguem passar pela checagem de estoque disponível antes da subtração ser aplicada. **Ninguém pega outra task até essa estar fechada e validada em produção.**
 
-A demo compara duas formas de um agente de IA consumir este vault como contexto:
+## Backlog geral — débito técnico herdado da NexCore
 
-- **MCP Tradicional (Cena 1)** carrega o vault *inteiro* como contexto bruto — o custo em tokens escala com o tamanho do backlog (25 tasks).
-- **Kronk + RAG (Cena 2)** recupera apenas o(s) documento(s) *semanticamente relevantes* para a tarefa pedida — idealmente 1-2 tasks, não as 25.
+As tasks **TASK-002 a TASK-025** são o restante do que a auditoria encontrou: validações que nunca foram implementadas (CPF, CEP, força de senha), cálculos espalhados sem teste (frete, imposto, desconto progressivo, pontos de fidelidade), funcionalidades que o contrato dizia "concluídas" e na prática eram só um TODO com nome bonito (notificação de envio, exportação de relatório, fluxo de reembolso), e um punhado de coisas que qualquer revisor sênior teria pego (paginação que não pagina, busca sem filtro de fato, log vazando número de cartão sem máscara).
 
-Com poucas tasks, as duas abordagens leriam praticamente o mesmo conteúdo e a diferença de custo não seria visível. Com 25, o contraste de tokens/custo entre "ler tudo" e "recuperar só o relevante" aparece de forma clara na comparação ao vivo — e, como cada task de ruído é pequena e independente, qualquer uma serve como tarefa real de implementação caso a demo precise de uma segunda rodada.
+Nenhuma delas é urgente como a TASK-001, mas o acúmulo é o motivo pelo qual qualquer mudança nessa base hoje dá medo. Prioridade de cada uma está marcada no campo `Status` do próprio arquivo — segue aproximadamente a ordem em que a auditoria foi encontrando.
+
+## Como trabalhar nesse backlog
+
+- Toda task nova entra com `Responsável: Backlog` até alguém puxar pra sprint atual.
+- Task sem `Critérios de Aceite` claros volta pro backlog até ser detalhada — já tivemos problema demais entregando "no escuro" pra confiar de novo nesse estilo.
+- `Verificação` deve sempre citar o comando de teste exato, não "testar manualmente". A NexCore testava manualmente. Olha onde isso nos trouxe.
+- Se encontrar mais sujeira no código que não está catalogada aqui, abre uma task nova — não conserta "de passagem" sem registrar, senão perdemos o histórico de novo.

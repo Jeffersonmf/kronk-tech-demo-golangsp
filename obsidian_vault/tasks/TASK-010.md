@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Os pedidos hoje só têm um UUID interno como identificador. O suporte pediu um número curto e sequencial (ex: `#00042`) para facilitar o atendimento ao cliente.
+Os pedidos hoje só têm o UUID interno que a NexCore usou como identificador único — ótimo para o banco de dados, péssimo para um atendente de suporte ditar por telefone. O time de suporte pediu um número curto e sequencial (ex: `#00042`) pra facilitar o atendimento ao cliente, algo que devia ter sido óbvio desde o desenho original do sistema de pedidos.
 
 ## Critérios de Aceite (AC)
 1. O primeiro pedido gera o número `#00001`.

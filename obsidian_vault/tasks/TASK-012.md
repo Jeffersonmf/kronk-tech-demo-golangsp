@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-A página de produto lista cada avaliação individualmente, mas não mostra uma nota média — clientes pedem um resumo rápido (ex: "4.5 de 5 estrelas").
+A funcionalidade de avaliações que a NexCore entregou lista cada review individualmente, mas nunca calculou uma nota média — metade do recurso, sem o resumo que qualquer cliente espera ver de cara (ex: "4.5 de 5 estrelas"). Foi sinalizado na auditoria como "funcionalidade incompleta apresentada como concluída".
 
 ## Critérios de Aceite (AC)
 1. Calcular a média aritmética das notas (1 a 5) de um produto.

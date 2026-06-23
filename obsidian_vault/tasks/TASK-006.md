@@ -5,7 +5,7 @@
 - [x] Responsável: Concluído (entregue em 20/05/2026)
 
 ## Contexto
-O time financeiro atualmente compila manualmente os totais de vendas mensais exportando dados de vários dashboards. Eles pediram uma exportação única em CSV com os totais de pedidos agrupados por dia, para importar no fluxo de trabalho de planilha já existente.
+Desde a entrega da NexCore, o time financeiro compilava manualmente os totais de vendas mensais, exportando dados de vários dashboards na mão — nenhuma ferramenta de relatório foi entregue, apesar de constar na proposta original. Esta foi uma das primeiras tasks que o time de plataforma conseguiu fechar depois do incidente, como um aceno rápido pro financeiro de que as coisas estavam melhorando: uma exportação única em CSV com os totais de pedidos agrupados por dia, pro fluxo de planilha que eles já usavam.
 
 ## Critérios de Aceite (AC)
 1. **Intervalo de datas:** O relatório recebe uma data inicial e final e agrega os totais por dia dentro desse intervalo.

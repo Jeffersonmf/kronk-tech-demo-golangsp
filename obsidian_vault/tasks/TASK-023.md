@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Para incentivar compras em volume, queremos aplicar um desconto automático conforme a quantidade de unidades de um mesmo item no carrinho.
+Outra iniciativa nova do time comercial, parte do mesmo movimento de retomada de crescimento da TASK-016 e da TASK-005: para incentivar compras em volume, queremos aplicar um desconto automático conforme a quantidade de unidades de um mesmo item no carrinho.
 
 ## Critérios de Aceite (AC)
 1. 1 a 2 unidades: sem desconto.

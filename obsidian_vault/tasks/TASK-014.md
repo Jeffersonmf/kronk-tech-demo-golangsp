@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-A listagem do catálogo segue a ordem de inserção dos produtos. Queremos permitir que o cliente ordene os resultados por preço, do menor para o maior ou vice-versa.
+A listagem do catálogo simplesmente segue a ordem de inserção dos produtos no banco — não existe nenhuma opção de ordenação, nem por preço nem por qualquer outro critério. Mais um item básico de UX de e-commerce que a NexCore deixou de fora. Queremos permitir que o cliente ordene os resultados por preço, do menor para o maior ou vice-versa.
 
 ## Critérios de Aceite (AC)
 1. Suporta ordenação crescente e decrescente por preço.

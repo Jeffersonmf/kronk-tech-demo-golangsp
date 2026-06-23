@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-O cadastro de usuários hoje aceita senhas como `"123"` ou `"abc"`, o que foi apontado como risco de segurança em uma auditoria recente.
+A mesma auditoria de segurança que encontrou o vazamento de número de cartão (TASK-015) também encontrou isto: o cadastro de usuários aceita senhas como `"123"` ou `"abc"` sem nenhuma validação de força. Mais um item que devia ter sido coberto desde o primeiro dia e a NexCore deixou passar.
 
 ## Critérios de Aceite (AC)
 1. A senha deve ter no mínimo 8 caracteres.

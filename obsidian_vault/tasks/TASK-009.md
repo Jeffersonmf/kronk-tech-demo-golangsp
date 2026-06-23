@@ -5,7 +5,7 @@
 - [ ] Responsável: Backlog
 
 ## Contexto
-Hoje o frete é um valor fixo de R$ 20,00 para qualquer pedido, independente do peso. Precisamos calcular o frete com base no peso total dos itens do carrinho.
+O frete hoje é um valor fixo de R$ 20,00 para qualquer pedido, independente do peso — um comentário no código da NexCore chama isso de "placeholder pro MVP, substituir antes do lançamento". O lançamento aconteceu há mais de um ano. Precisamos calcular o frete de verdade, com base no peso total dos itens do carrinho.
 
 ## Critérios de Aceite (AC)
 1. Pedidos de até 1kg custam R$ 10,00.
