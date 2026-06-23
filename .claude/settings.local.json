@@ -152,7 +152,28 @@
       "Bash(xargs kill -9)",
       "Bash(export KRONK_PROCESSOR=metal GOEXPERIMENT=\"\")",
       "Bash(~/go/bin/kronk server *)",
-      "Bash(break)"
+      "Bash(break)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Read(//Users/jeffersonferreira/.kronk/**)",
+      "Bash(git -C /Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp status)",
+      "Bash(git -C /Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp branch --show-current)",
+      "Bash(~/go/bin/kronk models *)",
+      "Bash(~/go/bin/kronk model *)",
+      "Bash(~/go/bin/kronk catalog *)",
+      "Bash(pkill -f \"kronk server start\")",
+      "Bash(KRONK_PROCESSOR=metal nohup ~/go/bin/kronk server start)",
+      "Bash(sysctl -n hw.perflevel0.physicalcpu hw.perflevel1.physicalcpu hw.memsize)",
+      "Bash(system_profiler SPHardwareDataType)",
+      "Bash(lsof -nP -iTCP -sTCP:LISTEN)",
+      "Read(//Users/jeffersonferreira/Developer/**)",
+      "Read(//Users/jeffersonferreira/**)",
+      "Bash(gopls version *)",
+      "Bash(gopls api-json *)",
+      "Bash(~/go/bin/gopls version *)",
+      "Bash(~/go/bin/gopls api-json *)",
+      "Bash(/Users/jeffersonferreira/.local/share/mise/installs/go/1.26.0/bin/go version *)",
+      "WebFetch(domain:www.iceloshop.com.br)"
     ]
   }
 }
