@@ -1,12 +1,12 @@
 # Roteiro — Demos Finais: Cena 1 vs Cena 2
 
-Último bloco da talk. Numeração continua de `slides-kronk-deepdive.md` (que terminou no slide 17). Pré-requisito mental do público nesse ponto: já sabem o que é Kronk, MoE, híbrido CPU/GPU, e já viram o código dos dois servidores MCP. Agora é a hora da prova real.
+Último bloco da talk. Numeração continua de `slides-kronk-deepdive.md` (que terminou no slide 19). Pré-requisito mental do público nesse ponto: já sabem o que é Kronk, MoE, híbrido CPU/GPU, e já viram o código dos dois servidores MCP. Agora é a hora da prova real.
 
 **Setup técnico que precisa estar pronto antes de subir esse bloco** (ver notas de produção no final): Cline configurado com dois providers prontos pra trocar — o provider de nuvem paga ("Cline", conta com créditos, pra mostrar custo real em $) e o provider local (Kronk, `http://localhost:11435/v1`, custo $0). Servidores `mcp_vault` (`vault_dumb` :9001, `vault_smart` :9002) rodando.
 
 ---
 
-## Slide 18 — Chegou a hora
+## Slide 20 — Chegou a hora
 
 **Tela:** Texto simples: "Mesma pergunta. Mesmo agente. Duas formas de buscar contexto." + os nomes revelados agora: **Cena 1** e **Cena 2**.
 
@@ -15,7 +15,7 @@
 
 ---
 
-## Slide 19 — Apresentando a Cena 1
+## Slide 21 — Apresentando a Cena 1
 
 **Tela:** print da tela de configuração do Cline mostrando: Provider = conta paga na nuvem, MCP ativo = `vault_dumb`.
 
@@ -24,7 +24,7 @@
 
 ---
 
-## Slide 20 — Cena 1 ao vivo
+## Slide 22 — Cena 1 ao vivo
 
 **Tela:** A tela real do VS Code/Cline, sem slide — é a hora da demo de fato. Ter o prompt já preparado pra colar (ver `prompt1.txt`/`prompt2.txt`/`prompt3.txt` no repo, ou o prompt da TASK-001 já validado).
 
@@ -35,7 +35,7 @@
 
 ---
 
-## Slide 21 — O número da Cena 1
+## Slide 23 — O número da Cena 1
 
 **Tela:** Print/captura de tela real do contador do Cline ao final dessa rodada — tokens e custo em destaque, fonte grande.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 22 — Apresentando a Cena 2
+## Slide 24 — Apresentando a Cena 2
 
 **Tela:** print da configuração trocada: Provider = Kronk local (`http://localhost:11435/v1`), MCP ativo = `vault_smart`.
 
@@ -53,7 +53,7 @@
 
 ---
 
-## Slide 23 — Cena 2 ao vivo
+## Slide 25 — Cena 2 ao vivo
 
 **Tela:** Tela real do VS Code/Cline de novo.
 
@@ -64,9 +64,9 @@
 
 ---
 
-## Slide 24 — Lado a lado: o contraste final
+## Slide 26 — Lado a lado: o contraste final
 
-**Tela:** Os dois prints (Slide 21 e o número real da Cena 2) um do lado do outro, com uma seta ou X grande mostrando a diferença.
+**Tela:** Os dois prints (Slide 23 e o número real da Cena 2) um do lado do outro, com uma seta ou X grande mostrando a diferença.
 
 | | Cena 1 (nuvem + dumb) | Cena 2 (local + smart) |
 |---|---|---|
@@ -80,7 +80,7 @@
 
 ---
 
-## Slide 25 — Fechamento
+## Slide 27 — Fechamento
 
 **Tela:** Slide final simples: "Go não é só a linguagem do seu backend. É a linguagem da sua infraestrutura de IA também." + links/contato/repo do GitHub.
 
@@ -92,6 +92,6 @@
 ## Notas de produção (não falar em voz alta)
 
 - **Pré-requisito crítico:** ensaiar a troca de provider e de MCP ativo no Cline ANTES de subir no palco — são poucos cliques (Settings → API Provider, e toggle `disabled` em `cline_mcp_settings.json` ou na UI de MCP Servers), mas trocar ao vivo sem ensaio é risco de travar a narrativa.
-- **Os números dos slides 21/24 são placeholders** — substituir pelos valores reais capturados num ensaio completo antes da talk. Não inventar números.
+- **Os números dos slides 23/26 são placeholders** — substituir pelos valores reais capturados num ensaio completo antes da talk. Não inventar números.
 - **Confirmado:** a Cena 1 usa a conta paga na nuvem (API key "GolangSP" criada hoje, com créditos) — custo real em $ vs $0 da Cena 2. Cuidado pra não deixar a tela exibir a API key em nenhum momento (cobrir esse campo nas configurações antes de compartilhar tela, ou trocar a key depois da talk já que ela foi colada em texto puro numa sessão de chat antes).
 - Considerar gravar essa seção de demo previamente (igual o restante da execução local), dado o que vimos hoje sobre tempo de resposta do modelo local — reduz risco de travar a apresentação ao vivo.

@@ -1,6 +1,6 @@
 # kronk-tech-demo-golangsp
 
-Repositório de demonstração da talk **"Golang + AI + MCP"**, parte 2, apresentada na comunidade **GolangSP**. Mostra duas formas de construir um servidor MCP (Model Context Protocol) que busca contexto num backlog de notas (Obsidian) para um agente de IA — uma ingênua (carrega tudo) e uma com busca semântica de verdade (recupera só o relevante) — rodando localmente, sem nuvem, via [Kronk](https://github.com/ardanlabs/kronk).
+Repositório de demonstração da talk **"IA sem Nuvem, em Golang"** (Golang + AI + MCP, parte 2), apresentada na comunidade **GolangSP**. Mostra duas formas de construir um servidor MCP (Model Context Protocol) que busca contexto num backlog de notas (Obsidian) para um agente de IA — uma ingênua (carrega tudo) e uma com busca semântica de verdade (recupera só o relevante) — rodando localmente, sem nuvem, via [Kronk](https://github.com/ardanlabs/kronk).
 
 ## Estrutura
 

@@ -159,7 +159,41 @@ O problema: cada token de pensamento custa tempo de geração. O Kronk deixa con
 
 ---
 
-## Slide 12 — Resumo / Takeaways
+## Slide 12 — Trocar de modelo é runtime, não startup
+
+**Tela:** `kronk server start` rodando de um lado; do outro, dois comandos:
+```
+kronk model list --local
+kronk model pull <nome>
+```
+e o campo "model" sendo trocado numa chamada de API (ou o "Model ID" nas configs do Cline), sem nenhum restart do servidor no meio.
+
+**Roteiro:**
+"Detalhe que confunde muita gente vindo de outras stacks: você NÃO escolhe o modelo na hora de subir o servidor. `kronk server start` só sobe o pool — vazio, ou com o que já estava quente. O modelo que de fato roda é decidido a cada requisição, pelo campo `model` no corpo da chamada — exatamente como funciona a API da OpenAI, e é por isso que o Cline só precisa de um 'Model ID' no provider, não de um flag de boot.
+
+Pra trocar de modelo: primeiro confere se ele já está baixado com `kronk model list --local`. Se não estiver, `kronk model pull <nome>` baixa do catálogo (ou direto do Hugging Face, se for um id completo). A partir daí, é só apontar o cliente pro novo nome — o pool de modelos que vimos no Slide 4 carrega esse modelo sob demanda, na primeira chamada, e descarrega ele depois de um tempo ocioso, sem você precisar reiniciar nada."
+
+---
+
+## Slide 13 — Maior ou menor? O dial de tamanho no `model_config.yaml`
+
+**Tela:** Tabela com os quatro modelos já configurados (com tuning próprio) no `model_config.yaml` desta máquina — só dois estão baixados hoje (✓), os outros dois são o "e se eu quiser trocar":
+
+| Modelo | Tamanho | Contexto | Status |
+|---|---|---|---|
+| `Qwopus3.5-4B-Coder` | menor (4B) | 73.728 | configurado, não baixado |
+| `gpt-oss-20b-Q8_0` | usado na talk hoje (20B, MoE) | 32.768 | ✓ baixado e quente |
+| `gemma-4-26B-A4B-it` | maior (26B-A4B, MoE) | 131.072 | configurado, não baixado |
+| `Qwen3.6-35B-A3B` | maior (35B-A3B, MoE) | 131.072 | configurado, não baixado |
+
+**Roteiro:**
+"O tamanho do modelo também é um dial, não uma decisão de arquitetura travada em pedra. Mesma API, mesmo cliente, mesmo Cline — só muda o nome no campo `model` e, se for um modelo novo, baixar ele primeiro. O tradeoff é o esperado: modelo menor responde mais rápido e cabe em máquina mais modesta, modelo maior tende a acertar mais em tarefas complexas mas custa mais tempo de geração por token.
+
+Olha essa tabela: ela não é teórica, é o `model_config.yaml` desta máquina, agora. Eu já deixei configs de tuning prontas pra dois modelos bem maiores que o que estamos usando na demo — caso alguém pergunte 'isso escala pra modelo grande de verdade?', a resposta é: sim, e a config já está pronta, só falta o `kronk model pull`. E pro outro lado, tem um modelo de 4B configurado também, pra cenário de hardware mais limitado. Você decide o ponto do tradeoff por requisição, não no boot do servidor."
+
+---
+
+## Slide 14 — Resumo / Takeaways
 
 **Tela:** Bullet points grandes, tipo "cartões".
 
@@ -183,7 +217,7 @@ Essa seção entra bem antes do deep dive do Kronk (ou logo depois do "momento W
 
 ---
 
-## Slide 13 — A base compartilhada: lendo o vault
+## Slide 15 — A base compartilhada: lendo o vault
 
 **Tela:** trecho de código de `internal/vault/reader.go` — a função `LoadAll`.
 
@@ -208,7 +242,7 @@ func LoadAll(root string) ([]Document, error) {
 
 ---
 
-## Slide 14 — Cena 1: o servidor "burro" (`vault_dumb`)
+## Slide 16 — Cena 1: o servidor "burro" (`vault_dumb`)
 
 **Tela:** código completo do handler de `cmd/dumb/main.go` (é bem curto, cabe na tela):
 
@@ -241,7 +275,7 @@ Não tem filtro. Não tem busca. Não tem relevância. O agente pediu uma inform
 
 ---
 
-## Slide 15 — Cena 2, parte 1: montando o índice vetorial (`vault_smart`, setup)
+## Slide 17 — Cena 2, parte 1: montando o índice vetorial (`vault_smart`, setup)
 
 **Tela:** trecho de `cmd/smart/main.go` (a função `run`, parte de inicialização) lado a lado com um diagrama: Documentos → [Modelo de Embedding] → Vetores → [DuckDB + índice HNSW].
 
@@ -259,7 +293,7 @@ Esses vetores vão pra dentro de um banco DuckDB, criado na memória, na hora, c
 
 ---
 
-## Slide 16 — Cena 2, parte 2: a busca de verdade (`search_vault`)
+## Slide 18 — Cena 2, parte 2: a busca de verdade (`search_vault`)
 
 **Tela:** trecho de `internal/store/duckdb.go`, a função `Search`, com destaque na query SQL.
 
@@ -279,7 +313,7 @@ O resultado: em vez de 26 documentos completos, o agente recebe só os 3 mais re
 
 ---
 
-## Slide 17 — Lado a lado: mesma pergunta, dois caminhos
+## Slide 19 — Lado a lado: mesma pergunta, dois caminhos
 
 **Tela:** tabela comparativa.
 

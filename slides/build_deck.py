@@ -15,6 +15,7 @@ from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
 
 OUT_PATH = "slides/GolangSP-Kronk-Talk.pptx"
+GOPHER_PATH = "slides/assets/gopher.png"  # official Go gopher (Renee French, CC BY 3.0)
 
 DARK = RGBColor(0x1A, 0x1A, 0x1A)
 ACCENT = RGBColor(0x00, 0x6F, 0xE6)
@@ -22,15 +23,15 @@ CODE_BG = RGBColor(0x24, 0x24, 0x24)
 CODE_FG = RGBColor(0xE0, 0xE0, 0xE0)
 
 SLIDES = [
-    {"kind": "title", "title": "Golang + AI + MCP",
-     "subtitle": "Tirando a IA da nuvem — GolangSP, parte 2",
+    {"kind": "title", "title": "IA sem Nuvem, em Golang",
+     "subtitle": "Golang + AI + MCP — GolangSP, parte 2",
      "notes": "Boa noite, pessoal! Essa é a parte 2 da talk sobre Go. Na "
                "parte 1 falamos de Go como ferramenta de produtividade. "
                "Agora: Go encontrando IA, e o protocolo que conecta os "
                "dois — o MCP."},
 
     # --- Abertura ---------------------------------------------------
-    {"title": "Golang + AI + MCP: tirando a IA da nuvem",
+    {"title": "IA sem Nuvem, em Golang",
      "bullets": ["Parte 2 da talk sobre Go",
                  "Parte 1: Go como ferramenta de produtividade",
                  "Parte 2: Go encontrando IA — e o protocolo MCP"],
@@ -266,7 +267,42 @@ SLIDES = [
                "custa tempo. O Kronk deixa controlar isso por "
                "requisição, com reasoning_effort — não é configuração "
                "fixa do modelo."},
-    {"title": "Slide 12 — Resumo / Takeaways",
+    {"title": "Slide 12 — Trocar de modelo é runtime, não startup",
+     "code_lang": "bash",
+     "code": "kronk model list --local\n"
+             "kronk model pull <nome>\n"
+             "\n"
+             "# depois, só aponta o cliente pro novo nome:\n"
+             "# Cline -> Settings -> Model ID\n"
+             "# curl  -> campo \"model\" no JSON",
+     "bullets": ["kronk server start sobe o pool, não fixa um modelo",
+                 "Modelo é escolhido por requisição (campo \"model\")",
+                 "Não baixado? kronk model pull <nome>",
+                 "Pool carrega/descarrega sob demanda, sem reiniciar"],
+     "notes": "Detalhe que confunde quem vem de outras stacks: você "
+               "não escolhe o modelo no boot do servidor. O pool "
+               "decide por requisição, igual a API da OpenAI. Pra "
+               "trocar: confere com model list --local, baixa com "
+               "model pull se precisar, e só aponta o cliente pro "
+               "novo nome — sem reiniciar o kronk server start."},
+    {"title": "Slide 13 — Maior ou menor? O dial de tamanho no model_config.yaml",
+     "table": [["Modelo", "Tamanho", "Status"],
+               ["Qwopus3.5-4B-Coder", "menor (4B)",
+                "configurado, não baixado"],
+               ["gpt-oss-20b-Q8_0", "usado hoje (20B, MoE)",
+                "baixado e quente"],
+               ["gemma-4-26B-A4B-it", "maior (26B-A4B, MoE)",
+                "configurado, não baixado"],
+               ["Qwen3.6-35B-A3B", "maior (35B-A3B, MoE)",
+                "configurado, não baixado"]],
+     "notes": "Tamanho de modelo também é um dial, não decisão "
+               "travada em pedra. Mesma API, só muda o nome no campo "
+               "model (e baixar antes, se for novo). Já tenho tuning "
+               "pronto pra dois modelos bem maiores que o de hoje e "
+               "um menor (4B) pra hardware mais limitado — a config "
+               "já existe no model_config.yaml desta máquina, só "
+               "falta o pull."},
+    {"title": "Slide 14 — Resumo / Takeaways",
      "bullets": ["Local-first com Kronk é rápido de verdade — uns "
                  "9-10x vs CPU pura",
                  "Memória unificada muda o jogo do offload — mas MoE e "
@@ -282,7 +318,7 @@ SLIDES = [
                "MoE, raciocínio ligado ou desligado — que torna o "
                "Kronk uma peça de infraestrutura séria pra rodar IA "
                "local em produção, não só em demo de palco."},
-    {"title": "Slide 13 — A base compartilhada: lendo o vault",
+    {"title": "Slide 15 — A base compartilhada: lendo o vault",
      "code_lang": "go",
      "code": 'func LoadAll(root string) ([]Document, error) {\n'
              '    var docs []Document\n'
@@ -308,7 +344,7 @@ SLIDES = [
                "conteúdo bruto e devolve uma lista de documentos. "
                "Simples, sem mágica. A diferença entre as duas cenas "
                "não está em COMO os dados são lidos."},
-    {"title": 'Slide 14 — Cena 1: o servidor "burro" (vault_dumb)',
+    {"title": 'Slide 16 — Cena 1: o servidor "burro" (vault_dumb)',
      "code_lang": "go",
      "code": 'mcp.AddTool(server, &mcp.Tool{\n'
              '    Name: "read_vault",\n'
@@ -327,7 +363,7 @@ SLIDES = [
                "ferramenta devolve as 26 tasks completas. É proposital: "
                "representa o jeito ingênuo de integrar LLM com dados. "
                "É exatamente essa simplicidade que custa caro."},
-    {"title": "Slide 15 — Cena 2, parte 1: montando o índice vetorial",
+    {"title": "Slide 17 — Cena 2, parte 1: montando o índice vetorial",
      "code_lang": "go",
      "code": 'krnEmbed, _ := kronk.New(model.WithModelFiles(\n'
              '    []string{embedModelPath}))\n'
@@ -343,7 +379,7 @@ SLIDES = [
                "modelo de embedding e transforma cada documento num "
                "vetor — 'coordenadas de significado' num espaço "
                "matemático. Isso vai pro DuckDB com índice HNSW."},
-    {"title": "Slide 16 — Cena 2, parte 2: a busca de verdade",
+    {"title": "Slide 18 — Cena 2, parte 2: a busca de verdade",
      "code_lang": "sql",
      "code": "SELECT path, text,\n"
              "       array_cosine_similarity(embedding, "
@@ -361,7 +397,7 @@ SLIDES = [
                "cosseno. É por isso que perguntar sobre 'dinheiro e "
                "pagamentos' acha a task de cupom mesmo sem a palavra "
                "'dinheiro' aparecer."},
-    {"title": "Slide 17 — Lado a lado: mesma pergunta, dois caminhos",
+    {"title": "Slide 19 — Lado a lado: mesma pergunta, dois caminhos",
      "table": [["", "vault_dumb (Cena 1)", "vault_smart (Cena 2)"],
                ["Ferramenta MCP", "read_vault (sem parâmetros)",
                 "search_vault(query, top_k)"],
@@ -377,14 +413,14 @@ SLIDES = [
                "tudo local, via Kronk, sem custar um centavo."},
 
     # --- Demos Finais -------------------------------------------------
-    {"title": "Slide 18 — Chegou a hora",
+    {"title": "Slide 20 — Chegou a hora",
      "bullets": ["Mesma pergunta. Mesmo agente.",
                  "Duas formas de buscar contexto.",
                  "Cena 1  vs  Cena 2"],
      "notes": "Lembram do gancho do começo — 'tem um jeito ingênuo e um "
                "jeito inteligente'? Vou rodar exatamente a mesma tarefa "
                "duas vezes, mudando só o MCP ativo e o modelo por trás."},
-    {"title": "Slide 19 — Apresentando a Cena 1",
+    {"title": "Slide 21 — Apresentando a Cena 1",
      "bullets": ["Provider: conta paga na nuvem",
                  "MCP ativo: vault_dumb",
                  "Contador de tokens e custo visíveis — hoje: zero"],
@@ -392,7 +428,7 @@ SLIDES = [
                "nuvem, pago por token, conectado a um MCP que não "
                "filtra nada. Olhem os números antes de eu começar: "
                "zero."},
-    {"title": "Slide 20 — Cena 1 ao vivo  [DEMO]",
+    {"title": "Slide 22 — Cena 1 ao vivo  [DEMO]",
      "bullets": ["Prompt: \"Leia a TASK-001 no vault do Obsidian e "
                  "resolva o problema descrito nela.\"",
                  "Cline chama read_vault (única ferramenta disponível)",
@@ -402,21 +438,21 @@ SLIDES = [
                "geração de nuvem travar num tool-call depois, o ponto "
                "já foi feito no instante em que read_vault devolve a "
                "resposta — pode pausar aí e seguir pra Cena 2."},
-    {"title": "Slide 21 — O número da Cena 1",
+    {"title": "Slide 23 — O número da Cena 1",
      "bullets": ["[Print real do contador do Cline ao final da rodada]",
                  "Tokens e custo em destaque"],
      "notes": "Aqui está o resultado da Cena 1: [ler os números reais "
                "capturados]. Token e dinheiro de verdade, gastos só "
                "porque a ferramenta de busca não soube filtrar nada. "
                "Guardem esse número."},
-    {"title": "Slide 22 — Apresentando a Cena 2",
+    {"title": "Slide 24 — Apresentando a Cena 2",
      "bullets": ["Provider: Kronk local (http://localhost:11435/v1)",
                  "MCP ativo: vault_smart",
                  "Mesmo prompt exato da Cena 1"],
      "notes": "Troquei o provider do Cline pra apontar pro Kronk, "
                "rodando aqui, agora, sem internet envolvida. E troquei "
                "o MCP ativo pra vault_smart."},
-    {"title": "Slide 23 — Cena 2 ao vivo  [DEMO]",
+    {"title": "Slide 25 — Cena 2 ao vivo  [DEMO]",
      "bullets": ["Mesmo prompt, colado de novo",
                  "Cline chama search_vault",
                  "Retorna só os documentos relevantes",
@@ -427,7 +463,7 @@ SLIDES = [
                "o fix completo — o ponto da demo é o contraste de "
                "tokens/custo na chamada da ferramenta, que aparece "
                "rápido."},
-    {"title": "Slide 24 — Lado a lado: o contraste final",
+    {"title": "Slide 26 — Lado a lado: o contraste final",
      "table": [["", "Cena 1 (nuvem + dumb)", "Cena 2 (local + smart)"],
                ["Tokens consumidos", "[número real]", "[número real]"],
                ["Custo", "[$ real]", "$0,00"],
@@ -438,7 +474,8 @@ SLIDES = [
                "casa. Mesma tarefa, mesmo agente. A diferença está em "
                "como a informação chega até o modelo, e onde o modelo "
                "roda."},
-    {"title": "Slide 25 — Fechamento",
+    {"title": "Slide 27 — Fechamento",
+     "gopher": True,
      "bullets": ["Go não é só a linguagem do seu backend.",
                  "É a linguagem da sua infraestrutura de IA também.",
                  "Repositório: github.com/[seu-usuario]/"
@@ -514,6 +551,8 @@ def build():
             slide.shapes.title.text = spec["title"]
             slide.placeholders[1].text = spec["subtitle"]
             slide.shapes.title.text_frame.paragraphs[0].font.size = Pt(44)
+            slide.shapes.add_picture(GOPHER_PATH, Inches(11.1), Inches(0.4),
+                                      height=Inches(1.8))
         else:
             slide = prs.slides.add_slide(blank_title_layout)
             slide.shapes.title.text = spec["title"]
@@ -542,6 +581,10 @@ def build():
                 rows = spec["table"]
                 add_table(slide, rows, side_left, content_top,
                           side_width, Inches(0.5 * len(rows)))
+
+            if spec.get("gopher"):
+                slide.shapes.add_picture(GOPHER_PATH, Inches(11.1),
+                                          Inches(5.6), height=Inches(1.6))
 
         notes = spec.get("notes")
         if notes:

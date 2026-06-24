@@ -1,5 +1,5 @@
 ===============================================================
-COLA DE COMANDOS — GolangSP: Golang + AI + MCP
+COLA DE COMANDOS — "IA sem Nuvem, em Golang" (GolangSP, Golang + AI + MCP)
 ===============================================================
 Ordem de boot, healthcheck, troca de cena, reset e diagnóstico.
 Tudo testado nesta máquina (MacBook M4 Pro, Metal).
@@ -97,7 +97,34 @@ kronk catalog list                # catálogo de modelos pra baixar
 kronk model pull <nome>           # baixar modelo do catálogo
 
 ---------------------------------------------------------------
-8. LOGS (onde olhar se algo der errado ao vivo)
+8. TROCAR DE MODELO NO KRONK (rodar um maior ou menor)
+---------------------------------------------------------------
+
+# A escolha do modelo é POR REQUEST, não no boot do servidor.
+# kronk server start só sobe o pool — o modelo é decidido pelo
+# campo "model" da chamada (ou pelo "Model ID" nas configs do Cline).
+
+# 8.1 Ver o que já está baixado nesta máquina
+kronk model list --local
+
+# 8.2 Baixar um modelo novo (catálogo ou id completo do HF)
+kronk model pull <nome>
+# ex: kronk model pull unsloth/Qwen3.6-35B-A3B-UD-Q8_K_XL
+
+# 8.3 Apontar o cliente pro novo modelo (sem reiniciar o kronk server start)
+#   No Cline: Settings -> API Provider -> Model ID
+#   No curl:  campo "model" no JSON da chamada
+
+# 8.4 Modelos já com tuning pronto em ~/.kronk/models/model_config.yaml
+#   (só os 2 primeiros estão baixados hoje)
+#   - gpt-oss-20b-Q8_0                              -> usado na talk (20B, MoE)
+#   - embeddinggemma-300m-qat-Q8_0                   -> embeddings do vault_smart
+#   - mradermacher/Qwopus3.5-4B-Coder.Q8_0/AGENT     -> menor (4B), não baixado
+#   - unsloth/gemma-4-26B-A4B-it-UD-Q8_K_XL/AGENT    -> maior (26B-A4B), não baixado
+#   - unsloth/Qwen3.6-35B-A3B-UD-Q8_K_XL/AGENT       -> maior (35B-A3B), não baixado
+
+---------------------------------------------------------------
+9. LOGS (onde olhar se algo der errado ao vivo)
 ---------------------------------------------------------------
 
 tail -f /tmp/kronk.log     # log do servidor Kronk
@@ -105,7 +132,7 @@ tail -f /tmp/dumb.log      # log do MCP dumb (se rodado manualmente)
 tail -f /tmp/smart.log     # log do MCP smart (se rodado manualmente)
 
 ---------------------------------------------------------------
-9. SLIDES (.pptx pra Google Slides)
+10. SLIDES (.pptx pra Google Slides)
 ---------------------------------------------------------------
 
 cd /Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp
