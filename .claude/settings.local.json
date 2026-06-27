@@ -175,7 +175,32 @@
       "Bash(/Users/jeffersonferreira/.local/share/mise/installs/go/1.26.0/bin/go version *)",
       "WebFetch(domain:www.iceloshop.com.br)",
       "Bash(grep -E \"\\\\.obsidian/|\\\\.canvas$|\\\\.base$\")",
-      "Bash(pip3 install *)"
+      "Bash(pip3 install *)",
+      "Bash(ps -p 63238 -o pid,command)",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/jeffersonferreira/.local/share/mise/installs/go/1.26.0/misc/chrome/gophertool/gopher.png\")",
+      "Bash(pip3 show *)",
+      "Bash(/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to png --outdir /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/slide_preview slides/GolangSP-Kronk-Talk.pptx)",
+      "Bash(/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf --outdir /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad slides/GolangSP-Kronk-Talk.pptx)",
+      "Bash(pdftoppm -png -f 1 -l 1 -r 100 /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/GolangSP-Kronk-Talk.pdf /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/p)",
+      "Bash(pdftoppm -png -f 19 -l 20 -r 100 /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/GolangSP-Kronk-Talk.pdf /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/p)",
+      "Bash(pdftoppm -png -f 35 -l 35 -r 100 /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/GolangSP-Kronk-Talk.pdf /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/p)",
+      "Bash(pdftoppm -png -f 21 -l 21 -r 100 /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/GolangSP-Kronk-Talk.pdf /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/71d5c187-6743-499a-afe6-4610b8e1164a/scratchpad/p)",
+      "Bash(~/go/bin/kronk version *)",
+      "Bash(~/go/bin/kronk --version)",
+      "Bash(GOEXPERIMENT=\"\" go install *)",
+      "Bash(GOEXPERIMENT=\"\" mise exec *)",
+      "Bash(~/.local/share/mise/installs/go/1.26.0/bin/kronk --version)",
+      "Bash(mise exec *)",
+      "Bash(xattr -l ~/go/bin/kronk)",
+      "Bash(xattr -d com.apple.provenance ~/go/bin/kronk)",
+      "Bash(xattr -c ~/go/bin/kronk)",
+      "Bash(xattr -c ~/.local/share/mise/installs/go/1.26.0/bin/kronk)",
+      "Bash(rm ~/go/bin/kronk)",
+      "Bash(ln -s ~/.local/share/mise/installs/go/1.26.0/bin/kronk ~/go/bin/kronk)",
+      "Bash(~/go/bin/kronk libs *)",
+      "Bash(~/go/bin/kronk bucky *)",
+      "Bash(xargs ls -la)",
+      "Bash(xargs cat)"
     ]
   }
 }
