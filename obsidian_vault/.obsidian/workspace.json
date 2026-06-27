@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tasks/TASK-011.md",
+                "file": "tasks/TASK-001.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TASK-011"
+              "title": "TASK-001"
             }
           }
         ]
@@ -185,6 +185,11 @@
   },
   "active": "5eae778553a406cf",
   "lastOpenFiles": [
+    "Untitled.canvas",
+    "2026-06-23.md",
+    "Untitled.base",
+    "Untitled 1.canvas",
+    "tasks/TASK-011.md",
     "tasks/TASK-004.md",
     "tasks/TASK-002.md",
     "tasks/TASK-003.md",
@@ -199,8 +204,6 @@
     "tasks/TASK-019.md.tmp.19781.4e465d92fb7d",
     "tasks/TASK-018.md.tmp.19781.0bdd7684200c",
     "tasks/TASK-017.md.tmp.19781.986c3975a96b",
-    "tasks/TASK-016.md.tmp.19781.52b2538185a7",
-    "Untitled.canvas",
     "tasks/TASK-025.md",
     "tasks/TASK-024.md",
     "tasks/TASK-023.md",
@@ -215,12 +218,9 @@
     "tasks/TASK-014.md",
     "tasks/TASK-013.md",
     "tasks/TASK-012.md",
-    "tasks/TASK-011.md",
     "tasks/TASK-010.md",
     "tasks/TASK-009.md",
     "tasks/TASK-008.md",
-    "tasks/TASK-007.md",
-    "tasks/TASK-006.md",
-    "tasks/TASK-005.md"
+    "tasks/TASK-007.md"
   ]
 }
