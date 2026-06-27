@@ -2,15 +2,15 @@
 
 Ordem da talk completa, pra não perder o fio:
 1. **Abertura/Intro** (este arquivo)
-2. Deep dive Kronk (`slides-kronk-deepdive.md`, slides 1-9)
-3. Por dentro do código dos 2 MCPs (`slides-kronk-deepdive.md`, slides 10-14)
+2. Deep dive Kronk (`slides-kronk-deepdive.md`, slides 1-14)
+3. Por dentro do código dos 2 MCPs (`slides-kronk-deepdive.md`, slides 15-19)
 4. **Demos ao vivo — Cena 1 e Cena 2** (no final, é o pagamento de tudo que foi explicado antes)
 
 ---
 
 ## Slide A1 — Título
 
-**Tela:** Nome da talk + seu nome/handle. Algo como: "Golang + AI + MCP: tirando a IA da nuvem" (ajuste pro título real que vocês escolheram pro CFP).
+**Tela:** Nome da talk + seu nome/handle: **"IA sem Nuvem, em Golang"** (título final, escolhido pro CFP).
 
 **Roteiro:**
 "Boa noite, pessoal! Essa é a parte 2 da talk que comecei [ou: que fulano começou] sobre Go. Na parte 1 a gente falou de Go como ferramenta de produtividade. Agora vamos um passo além: Go encontrando IA, e o protocolo que está conectando os dois — o MCP."

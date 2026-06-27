@@ -16,7 +16,7 @@ import (
 	"github.com/jeff/mcp-vault/internal/vault"
 )
 
-const defaultVaultPath = "/home/jmarchetti/Developer/kronk-tech-demo-golangsp/obsidian_vault"
+const defaultVaultPath = "/Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp/obsidian_vault"
 
 const addr = ":9001"
 

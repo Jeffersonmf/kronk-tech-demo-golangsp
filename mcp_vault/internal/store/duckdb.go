@@ -6,6 +6,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -24,6 +26,20 @@ type Result struct {
 	Similarity float64 `json:"similarity"`
 }
 
+// loadVSS loads the DuckDB VSS extension from local cache to avoid network
+// calls during offline demos. Falls back to INSTALL+LOAD on first run.
+func loadVSS(db *sql.DB) error {
+	home, _ := os.UserHomeDir()
+	cached := filepath.Join(home, ".duckdb", "extensions", "v1.4.4", "osx_arm64", "vss.duckdb_extension")
+	if _, err := os.Stat(cached); err == nil {
+		if _, err := db.Exec(fmt.Sprintf("LOAD '%s';", cached)); err == nil {
+			return nil
+		}
+	}
+	_, err := db.Exec("INSTALL vss; LOAD vss;")
+	return err
+}
+
 // LoadVault creates an in-memory DuckDB database, embeds every document in
 // docs using krnEmbed, and indexes the embeddings with an HNSW index for
 // cosine-similarity search. dims must match the native embedding dimension
@@ -34,7 +50,7 @@ func LoadVault(ctx context.Context, krnEmbed *kronk.Kronk, docs []vault.Document
 		return nil, fmt.Errorf("open duckdb: %w", err)
 	}
 
-	if _, err := db.Exec("INSTALL vss; LOAD vss;"); err != nil {
+	if err := loadVSS(db); err != nil {
 		return nil, fmt.Errorf("load vss extension: %w", err)
 	}
 

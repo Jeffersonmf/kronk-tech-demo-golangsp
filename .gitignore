@@ -14,9 +14,18 @@ mcp_vault/bin/
 # OS / editor cruft
 .DS_Store
 
+# Obsidian — ephemeral UI state and scratch files, not demo content
+**/.obsidian/workspace.json
+*.canvas
+*.base
+obsidian_vault/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md
+
 # Go
 *.test
 *.out
 
 # Node
 node_modules/
+
+# Slides build artifacts
+slides/*.pptx
