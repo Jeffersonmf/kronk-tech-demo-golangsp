@@ -23,5 +23,4 @@ Esse é o incidente que deu origem a todo o backlog deste vault (ver `obsidian_v
 - Execute `go test ./internal/inventory/...`
 - O teste deve passar com a flag `-race` habilitada.
 
-## Nota da Demo
-Esta é a **única** tarefa neste vault que o agente de IA precisa de fato resolver durante a demo ao vivo. As tarefas TASK-002 a TASK-025 são débito técnico herdado da NexCore, mantidas neste vault como "ruído" realista — veja `obsidian_vault/tasks/README.md` para entender por que existem. Um agente baseado em retrieval (Kronk + RAG) deve trazer esta tarefa (e `fake_project/internal/inventory/service.go`) como contexto relevante e ignorar o restante; um agente que carrega o vault inteiro como contexto bruto vai trazer todas elas.
+

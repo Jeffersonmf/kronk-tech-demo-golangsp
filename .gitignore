@@ -29,3 +29,8 @@ node_modules/
 
 # Slides build artifacts
 slides/*.pptx
+
+.claude
+
+CLAUDE.md
+slides
