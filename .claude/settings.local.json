@@ -211,7 +211,9 @@
       "WebFetch(domain:www.kronkai.com)",
       "WebFetch(domain:kronkai.com)",
       "Bash(pip3 list *)",
-      "Bash(dot -V)"
+      "Bash(dot -V)",
+      "Bash(git *)",
+      "Bash(grep -n \"^SLIDES\\\\|^slides =\\\\|^slides=\\\\|= \\\\[$\\\\|^def \\\\|^class \" build_deck.py)"
     ]
   }
 }
