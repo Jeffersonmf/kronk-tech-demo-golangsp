@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync/atomic"
+	"time"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -19,6 +21,8 @@ import (
 const defaultVaultPath = "/Users/jeffersonferreira/Developer/kronk-tech-demo-golangsp/obsidian_vault"
 
 const addr = ":9001"
+
+var callCount atomic.Int64
 
 func main() {
 	if err := run(); err != nil {
@@ -46,7 +50,7 @@ func run() error {
 	mux := http.NewServeMux()
 	mux.Handle("/mcp", handler)
 
-	fmt.Printf("vault_dumb MCP server listening on %s/mcp (vault: %s)\n", addr, vaultPath)
+	log.Printf("[vault_dumb] listening on %s/mcp  vault=%s", addr, vaultPath)
 
 	return http.ListenAndServe(addr, mux)
 }
@@ -56,18 +60,43 @@ type readVaultParams struct{}
 
 func readVaultHandler(vaultPath string) func(context.Context, *mcp.CallToolRequest, readVaultParams) (*mcp.CallToolResult, any, error) {
 	return func(_ context.Context, _ *mcp.CallToolRequest, _ readVaultParams) (*mcp.CallToolResult, any, error) {
+		n := callCount.Add(1)
+		start := time.Now()
+		log.Printf("[vault_dumb] call #%d — read_vault iniciada", n)
+
+		loadStart := time.Now()
 		docs, err := vault.LoadAll(vaultPath)
 		if err != nil {
 			return nil, nil, fmt.Errorf("load vault: %w", err)
 		}
+		loadDur := time.Since(loadStart)
 
+		buildStart := time.Now()
 		var sb strings.Builder
 		for _, doc := range docs {
 			fmt.Fprintf(&sb, "--- FILE: %s ---\n%s\n\n", doc.Path, doc.Content)
 		}
+		payload := sb.String()
+		buildDur := time.Since(buildStart)
+
+		totalChars := len(payload)
+		estTok := estTokens(payload)
+		totalDur := time.Since(start)
+
+		log.Printf("[vault_dumb] call #%d — docs=%d  chars=%d  est_tokens=%d",
+			n, len(docs), totalChars, estTok)
+		log.Printf("[vault_dumb] call #%d — load=%s  build=%s  total=%s",
+			n, loadDur.Round(time.Millisecond), buildDur.Round(time.Millisecond), totalDur.Round(time.Millisecond))
+		log.Printf("[vault_dumb] call #%d — ⚠️  despejando vault inteiro: %d tokens injetados no contexto do agente",
+			n, estTok)
 
 		return &mcp.CallToolResult{
-			Content: []mcp.Content{&mcp.TextContent{Text: sb.String()}},
+			Content: []mcp.Content{&mcp.TextContent{Text: payload}},
 		}, nil, nil
 	}
+}
+
+// estTokens estimates the token count for a string (~3.5 chars per token).
+func estTokens(s string) int {
+	return int(float64(len(s)) / 3.5)
 }

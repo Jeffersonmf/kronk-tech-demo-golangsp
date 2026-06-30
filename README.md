@@ -150,9 +150,4 @@ graph LR
 
 | Arquivo | Conteúdo |
 |---|---|
-| [`GUIA-ESTUDO.md`](GUIA-ESTUDO.md) | Guia técnico completo — 29 capítulos, ~5.300 linhas |
 | [`benchmarks-apresentacao.md`](benchmarks-apresentacao.md) | Números reais de desempenho (CPU vs GPU vs híbrido) |
-| [`slides-abertura.md`](slides-abertura.md) | Roteiro da talk — abertura |
-| [`slides-kronk-deepdive.md`](slides-kronk-deepdive.md) | Roteiro da talk — deep dive técnico |
-| [`slides-demos-finais.md`](slides-demos-finais.md) | Roteiro da talk — demos ao vivo |
-| [`CLAUDE.md`](CLAUDE.md) | Contexto do projeto para assistentes de IA |

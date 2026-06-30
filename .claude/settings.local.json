@@ -200,7 +200,18 @@
       "Bash(~/go/bin/kronk libs *)",
       "Bash(~/go/bin/kronk bucky *)",
       "Bash(xargs ls -la)",
-      "Bash(xargs cat)"
+      "Bash(xargs cat)",
+      "Bash(kronk --version)",
+      "Bash(kronk version *)",
+      "Bash(kill 63238)",
+      "Bash(kill 55664 55665)",
+      "Bash(unzip -o \"slides/GolangSP-Kronk-Talk.pptx\" -d /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/8fff7c8d-7574-4a64-b27f-a3c4f770e867/scratchpad/pptx_extract)",
+      "Bash(cp slides/assets/me.jpeg /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/8fff7c8d-7574-4a64-b27f-a3c4f770e867/scratchpad/pptx_extract/ppt/media/image2.jpg)",
+      "Bash(zip -r /private/tmp/claude-501/-Users-jeffersonferreira-Developer-kronk-tech-demo-golangsp/8fff7c8d-7574-4a64-b27f-a3c4f770e867/scratchpad/fixed.pptx . -x \"*.DS_Store\")",
+      "WebFetch(domain:www.kronkai.com)",
+      "WebFetch(domain:kronkai.com)",
+      "Bash(pip3 list *)",
+      "Bash(dot -V)"
     ]
   }
 }
